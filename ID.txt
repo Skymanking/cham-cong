@@ -1,0 +1,16 @@
+print(ot.cell_value(2, 3))
+2 là cột, 3 là hàng
+
+
+Xin làm thêm id = 41
+ngày đi làm id = 3
+thứ id =4
+ca id = 5
+worded hours = 14
+Total OT = 19
+Regular =25
+OT bắt buộc = 32
+Ot chủ = 34
+
+
+
