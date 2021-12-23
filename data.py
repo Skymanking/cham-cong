@@ -4,7 +4,7 @@ from xlutils.copy import copy
 import xlsxwriter
 import datetime
 import collections
-from openpyxl.formula.translate import Translator
+
 
 
 # =========================== convert OT =====================
@@ -47,6 +47,7 @@ for row in range(len(all_rows_baocao_del)):
         delete.write(row, col, "")
 delete_baocao.close()
 
+
 # =========================== Get data =====================
 
 chamcong = xlrd.open_workbook('data.xlsx')
@@ -57,7 +58,40 @@ w_sheet = wb.get_sheet(0)
 OT_approve = xlrd.open_workbook('OT_convert.xlsx')
 dataOT_approve = OT_approve.sheet_by_index(0)
 
+#Tạo template báo cáo
+
 baocao = xlrd.open_workbook('baocao.xlsx')
+mod_baocao = copy(baocao)
+w_sheet_baocao = mod_baocao.get_sheet(0)
+
+colect_id = []
+colect_date = []
+for id in range(data.nrows-3):
+    colect_id.append(data.cell_value(id+3, 0))
+    colect_date.append(data.cell_value(id+3, 3))
+c = collections.Counter(colect_id)
+d = collections.Counter(colect_date)
+ID_baocao = c.keys()
+date_baocao = d.keys()
+
+colen2 = 0
+for y in date_baocao:
+    w_sheet_baocao.write(5, colen2+6, y)
+    colen2 = colen2+2
+
+colen = 0
+for z in ID_baocao:
+    w_sheet_baocao.write(colen+7, 0, z)
+    colen = colen+1
+
+for o in range(1,23):
+    w_sheet_baocao.write(5, o+67, o)
+
+mod_baocao.save('baocao.xlsx')
+
+
+
+
 
 
 # =========================== Duyệt OT =====================
@@ -70,8 +104,16 @@ for i in range(dataOT_approve.nrows):
             w_sheet.write(j+3, 41,float( data.cell_value(j+3, 32))+float( data.cell_value(j+3, 34)))
 
 
-if(data.cell_value(7, 5) == "San xuat toi" and float(data.cell_value(7+3, 25))>=5):
-    print("dung")
+
+
+
+baocao_1 = xlrd.open_workbook('baocao.xlsx')
+data_baocao = baocao_1.sheet_by_index(0)
+
+mod_day_baocao = copy(baocao_1)
+w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
+
+
 # =========================== Mã hoá ca =====================
 for m in range(data.nrows-3):
     if(float(data.cell_value(m+3, 41))>=1):
@@ -106,46 +148,6 @@ wb.save('data.xlsx')
 
 # =========================== Xử lý báo cáo =============================================
 
-#Tạo template báo cáo
-# congthuc = xlrd.open_workbook('congthuc.xlsx')
-# sheet_congthuc = congthuc.sheet_by_index(0)
-
-mod_baocao = copy(baocao)
-w_sheet_baocao = mod_baocao.get_sheet(0)
-
-colect_id = []
-colect_date = []
-for id in range(data.nrows-3):
-    colect_id.append(data.cell_value(id+3, 0))
-    colect_date.append(data.cell_value(id+3, 3))
-c = collections.Counter(colect_id)
-d = collections.Counter(colect_date)
-ID_baocao = c.keys()
-date_baocao = d.keys()
-
-colen2 = 0
-for y in date_baocao:
-    w_sheet_baocao.write(5, colen2+6, y)
-    colen2 = colen2+2
-
-colen = 0
-for z in ID_baocao:
-    pp = '=COUNTIF($G'+str(colen+7)+':$BP'+str(colen+7)+',"a")+COUNTIF($G'+str(colen+7)+':$BP'+str(colen+7)+',"r0,a5")/2+COUNTIF($G'+str(colen+7)+':$BP'+str(colen+7)+',"p5,a5")/2'
-    w_sheet_baocao.write(colen+7, 0, z)
-    w_sheet_baocao.write(colen+7, 68, pp)
-    colen = colen+1
-
-
-
-mod_baocao.save('baocao.xlsx')
-
-
-
-baocao_1 = xlrd.open_workbook('baocao.xlsx')
-data_baocao = baocao_1.sheet_by_index(0)
-
-mod_day_baocao = copy(baocao_1)
-w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
 
 
 # # Chuyển ngày
