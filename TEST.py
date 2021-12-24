@@ -1,37 +1,95 @@
+from openpyxl.styles import PatternFill, Alignment
+from openpyxl.drawing.image import Image
+from xlrd.xlsx import cooked_text  
+import xlwt
+import xlrd
+from xlutils.copy import copy
+import xlsxwriter
+import datetime
+import collections
 import openpyxl
-from openpyxl import workbook
 
-data_report = openpyxl.load_workbook('baocao1.xlsx')
-sheet_name = data_report.sheetnames[0]
-sheet1 = data_report[sheet_name]
+dataOT = openpyxl.load_workbook('OT.xlsx')
+sheet_name_OT = dataOT.sheetnames[0]
+sheet1_OT = dataOT[sheet_name_OT]
 
-rows = sheet1.max_row #29
-cols = sheet1.max_column #69
-vi_tri = str(sheet1[7][cols-23])[15:17]
-print(vi_tri)
-for cot in range(0, rows-7):
-    x = cot + 8
-    sheet1[x][cols-22].value = '=COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"a")+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"r0,a5")/2+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"p5,a5")/2'
-    sheet1[x][cols-21].value = '=COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"d")+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"r0,d5")/2+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"p5,d5")/2'
-    sheet1[x][cols-20].value = '=COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"b")+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"r0,b5")/2+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"p5,b5")/2'
-    sheet1[x][cols-19].value = '=COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"c")+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"r0,c5")/2+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"p5,c5")/2'
-    sheet1[x][cols-18].value = '=COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"KH")+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"TL")+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"L")'
-    sheet1[x][cols-17].value = ''
-    sheet1[x][cols-16].value = '=COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"hh")'
-    sheet1[x][cols-15].value = '=COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"nt7")'
-    sheet1[x][cols-14].value = '=COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"P")+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"p5,a5")/2+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"p5,b5")/2+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"p5,c5")/2+COUNTIF($G'+str(x)+':'+ vi_tri+str(x)+',"p5,d5")/2'
-    sheet1[x][cols-13].value = '=SUBTOTAL(9,BQ7:BY7)'
-    sheet1[x][cols-12].value = '=SUM(J7,L7,N7,P7,R7,T7,X7,Z7,AB7,AD7,AF7,AH7,AL7,AN7,AP7,AR7,AT7,AV7,AZ7,BB7,BD7,BF7,BH7,BP7)'
-    sheet1[x][cols-11].value = '=SUM(H7,V7,AJ7,AX7,BL7)'
-    sheet1[x][cols-10].value = '=SUM(BJ7,BN7)'
-    sheet1[x][cols-9].value = '=IF(BZ7>25,4,IF(BZ7>18,3,IF(BZ7>12,2,IF(BZ7>4,1,0))))-BX7-2+1'
-    sheet1[x][cols-8].value = ''
-    sheet1[x][cols-7].value = '=CD7*CI7'
-    sheet1[x][cols-6].value = '=F7-BY7+1'
-    sheet1[x][cols-5].value = '=CE7*16'
-    sheet1[x][cols-4].value = ''
-    sheet1[x][cols-3].value = ''
-    sheet1[x][cols-2].value = ''
-    sheet1[x][cols-1].value = ''
+rows_OT = sheet1_OT.max_row #9
+cols_OT = sheet1_OT.max_column #10
 
-data_report.save('baocao1.xlsx')
+for col in range(4,cols_OT):
+    time_OT = sheet1_OT.cell(col,10).coordinate
+    day_OT = sheet1_OT.cell(col,11).coordinate
+
+    x = sheet1_OT.cell(col,5).coordinate
+    y = sheet1_OT.cell(col,6).coordinate
+    sheet1_OT[time_OT].value = '=hour('+y+'-'+x+')'
+    sheet1_OT[day_OT].value = '=day('+x+')'
+    
+dataOT.save('OT.xlsx')
+
+# chamcong = xlrd.open_workbook('data.xlsx')
+# data = chamcong.sheet_by_index(0)
+# wb = copy(chamcong)
+# w_sheet = wb.get_sheet(0)
+
+# OT_approve = xlrd.open_workbook('OT_convert.xlsx')
+# dataOT_approve = OT_approve.sheet_by_index(0)
+
+# for i in range(dataOT_approve.nrows):
+#     for j in range(data.nrows-3):
+#         if dataOT_approve.cell_value(i, 0) == data.cell_value(j+3, 0) and dataOT_approve.cell_value(i, 2) == data.cell_value(j+3, 3):
+#             w_sheet.write(j+3, 41,float( data.cell_value(j+3, 32))+float( data.cell_value(j+3, 33)))
+#         else:
+#             w_sheet.write(j+3, 41,float( data.cell_value(j+3, 32))+float( data.cell_value(j+3, 34)))
+
+# # =========================== Mã hoá ca =====================
+# for m in range(data.nrows-3):
+#     if(float(data.cell_value(m+3, 41))>=1):
+#         if(data.cell_value(m+3, 5) == "Cuoi tuan Ca Toi"):
+#             w_sheet.write(m+3, 42, "CN")
+#         elif(data.cell_value(m+3, 5) == "Cuoi tuan Ca Sang"):
+#             w_sheet.write(m+3, 42, "CN")
+#         else:
+#             w_sheet.write(m+3, 42, "RCN")
+#     if(float(data.cell_value(m+3, 25))>=5):
+#         if(data.cell_value(m+3, 5) == "San xuat sang"):
+#             w_sheet.write(m+3, 42, "A")
+#         elif(data.cell_value(m+3, 5) == "San xuat toi"):
+#             w_sheet.write(m+3, 42, "C")
+#         elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
+#             w_sheet.write(m+3, 42, "B")
+#         elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
+#             w_sheet.write(m+3, 42, "D")
+#         else:
+#             w_sheet.write(m+3, 42, "RR")
+#     elif(float(data.cell_value(m+3, 25))<5 or float(data.cell_value(m+3, 25))>0):
+#         if(data.cell_value(m+3, 5) == "San xuat sang"):
+#             w_sheet.write(m+3, 42, "R")
+#         elif(data.cell_value(m+3, 5) == "San xuat toi"):
+#             w_sheet.write(m+3, 42, "R")
+#         elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
+#             w_sheet.write(m+3, 42, "R")
+#         elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
+#             w_sheet.write(m+3, 42, "RR")
+
+# wb.save('data.xlsx')
+
+
+# #Data
+# all_rows_data = []
+# for row in range(data.nrows):
+#     curr_row = []
+#     for col in range(data.ncols):
+#         curr_row.append(data.cell_value(row, col))
+#     all_rows_data.append(curr_row)
+
+# chamcong1 = xlsxwriter.Workbook('data1.xlsx')
+# data1 = chamcong1.add_worksheet()
+
+# for row in range(len(all_rows_data)):
+#     for col in range(len(all_rows_data[0])):
+#         data1.write(row, col, all_rows_data[row][col])
+# chamcong1.close()
+
+
+# #Tạo template báo cáo
