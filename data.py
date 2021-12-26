@@ -81,8 +81,16 @@ for y in date_baocao:
 
 colen = 0
 for z in ID_baocao:
-    w_sheet_baocao.write(colen+7, 0, z)
-    colen = colen+1
+    for j in range(data.nrows -3):
+        if z == data.cell_value(j+3, 0):
+            w_sheet_baocao.write(colen+7, 0, data.cell_value(j+3, 0))
+            w_sheet_baocao.write(colen+7, 1, data.cell_value(j+3, 1))
+            w_sheet_baocao.write(colen+7, 2, data.cell_value(j+3, 2))
+            w_sheet_baocao.write(colen+7, 3, data.cell_value(j+3, 3))
+            w_sheet_baocao.write(colen+7, 4, data.cell_value(j+3, 4))
+            w_sheet_baocao.write(colen+7, 5, data.cell_value(j+3, 5))
+            colen = colen+1
+            break
 
 for o in range(1,1):
     w_sheet_baocao.write(5, o+67, o)
@@ -91,8 +99,6 @@ mod_baocao.save('baocao.xlsx')
 
 
 
-
-w_sheet.write(2, 41,"test")
 
 # =========================== Duyệt OT =====================
 
