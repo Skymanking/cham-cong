@@ -4,8 +4,8 @@ from xlutils.copy import copy
 import xlsxwriter
 import datetime
 import collections
-
-
+import openpyxl
+from openpyxl.styles import PatternFill, Alignment
 
 # =========================== convert OT =====================
 dataOT = xlrd.open_workbook('OT.xlsx')
@@ -84,7 +84,7 @@ for z in ID_baocao:
     w_sheet_baocao.write(colen+7, 0, z)
     colen = colen+1
 
-for o in range(1,23):
+for o in range(1,1):
     w_sheet_baocao.write(5, o+67, o)
 
 mod_baocao.save('baocao.xlsx')
@@ -92,7 +92,7 @@ mod_baocao.save('baocao.xlsx')
 
 
 
-
+w_sheet.write(2, 41,"test")
 
 # =========================== Duyệt OT =====================
 
@@ -113,7 +113,6 @@ data_baocao = baocao_1.sheet_by_index(0)
 mod_day_baocao = copy(baocao_1)
 w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
 
-
 # =========================== Mã hoá ca =====================
 for m in range(data.nrows-3):
     if(float(data.cell_value(m+3, 41))>=1):
@@ -122,7 +121,7 @@ for m in range(data.nrows-3):
         elif(data.cell_value(m+3, 5) == "Cuoi tuan Ca Sang"):
             w_sheet.write(m+3, 42, "CN")
         else:
-            w_sheet.write(m+3, 42, "RRCN")
+            w_sheet.write(m+3, 42, "RCN")
     if(float(data.cell_value(m+3, 25))>=5):
         if(data.cell_value(m+3, 5) == "San xuat sang"):
             w_sheet.write(m+3, 42, "A")
@@ -142,7 +141,7 @@ for m in range(data.nrows-3):
         elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
             w_sheet.write(m+3, 42, "R")
         elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
-            w_sheet.write(m+3, 42, "RRRRR")
+            w_sheet.write(m+3, 42, "RR")
 
 wb.save('data.xlsx')
 
@@ -157,7 +156,6 @@ for i in range(data_baocao.nrows-7):
         if data_baocao.cell_value(i+7, 0) == data.cell_value(j+3, 0):
             for k in range(0,62,2):
                 if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
-
                         w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, 42))
                         w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, 41))
 
@@ -201,5 +199,6 @@ for row in range(len(all_rows_baocao)):
     for col in range(len(all_rows_baocao[0])):
         data2.write(row, col, all_rows_baocao[row][col])
 baocao1.close()
+
 
 
