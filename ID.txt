@@ -14,3 +14,16 @@ Ot chủ = 34
 
 
 
+chuyển module pandas
+
+các trường hợp đã fix:
+- 
+các trường hợp chưa fix:
+- quên chấm công
+- ca 36 tiếng
+- link phép năm 
+- tìm hiểu quy định 62
+
+
+
+

@@ -22,7 +22,7 @@ for i in range(ot.nrows-3):
     hh, mm , ss = map(int, str(timeOT).split(':'))
     ot3 = hh + mm/60
     d = x.strftime("%Y-%m-%d")
-    add_sheet.write(i,0, id)
+    add_sheet.write(i,0, str(id))
     add_sheet.write(i,1, ot3)
     add_sheet.write(i,2, d)
 ot_convert.close()
