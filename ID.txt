@@ -25,5 +25,12 @@ các trường hợp chưa fix:
 - tìm hiểu quy định 62
 
 
+Thông A2108: test ca hành chính
+Ngọc A2065: test ca hành chính
 
+Việt A049: test ca sản xuất
+Dung Em: A055 test ca sản xuất
 
+chuyển module thành pandas
+Tạo template bằng file template cũ và file nhân viên mới
+chỉnh sửa các trường hợp
