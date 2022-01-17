@@ -1,3 +1,3 @@
 import pandas as pd
-data = pd.read_excel("OT.xlsx")
-print(data.values[0][0])
+data = pd.read_excel("data1.xlsx")
+print(data.values[1][0])

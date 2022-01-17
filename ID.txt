@@ -1,3 +1,7 @@
+Thay đổi ngôn ngữ: C:\BioTime\mysite\locale\vi\LC_MESSAGES
+
+
+
 print(ot.cell_value(2, 3))
 2 là cột, 3 là hàng
 
@@ -25,8 +29,8 @@ các trường hợp chưa fix:
 - tìm hiểu quy định 62
 
 
-Thông A2108: test ca hành chính
-Ngọc A2065: test ca hành chính
+Thắng : test ca hành chính
+Thao : test ca hành chính
 
 Việt A049: test ca sản xuất
 Dung Em: A055 test ca sản xuất
