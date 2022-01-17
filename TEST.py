@@ -44,7 +44,6 @@ class Giaodien(Frame):
         
 
         # =========================== convert OT =====================
-
         dataOT = xlrd.open_workbook(GD.filename_OT)
         ot = dataOT.sheet_by_index(0)
         ot_convert = xlsxwriter.Workbook('OT_convert.xlsx')
@@ -55,15 +54,17 @@ class Giaodien(Frame):
             date1 =ot.cell_value(i+3, 5)
             x =(datetime.datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
             y =(datetime.datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
+            print(x)
+            print(y)
             timeOT = y - x
+            print(timeOT)
             hh, mm , ss = map(int, str(timeOT).split(':'))
             ot3 = hh + mm/60
             d = x.strftime("%Y-%m-%d")
-            add_sheet.write(i,0, id)
+            add_sheet.write(i,0, str(id))
             add_sheet.write(i,1, ot3)
             add_sheet.write(i,2, d)
         ot_convert.close()
-
         # =========================== Xoá data =====================
 
         baocao_del = xlrd.open_workbook('baocao.xlsx')
@@ -186,7 +187,7 @@ class Giaodien(Frame):
                 elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
                     w_sheet.write(m+3, 42, "RR")
 
-        wb.save('data.xlsx')
+        wb.save(GD.filename_data)
 
         # =========================== Xử lý báo cáo =============================================
 
@@ -269,7 +270,7 @@ class Giaodien(Frame):
             for col in range(1, len(all_rows_baocao[0])+1):
                 sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
         data_convert.save("report1.xlsx")
-        print("done")
+        print("DONE")
 
 
 
