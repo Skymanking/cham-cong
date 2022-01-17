@@ -109,7 +109,7 @@ for j in range(data.nrows-3):
             w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 32)))
             break
         else:
-            w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29)))
+            w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31)))
 
 
 
@@ -154,7 +154,10 @@ for m in range(data.nrows-3):
 wb.save('dataa.xlsx')
 
 # =========================== Xử lý báo cáo =============================================
-
+chamcong = xlrd.open_workbook('dataa.xlsx')
+data = chamcong.sheet_by_index(0)
+wb = copy(chamcong)
+w_sheet = wb.get_sheet(0)
 
 
 # # Chuyển ngày
@@ -235,4 +238,3 @@ for row in range(1, len(all_rows_baocao)+1):
         sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
 data_convert.save("report1.xlsx")
 print("done")
-
