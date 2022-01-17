@@ -6,9 +6,10 @@ import datetime
 import collections
 import openpyxl
 from openpyxl.styles import PatternFill, Alignment
+from tqdm import tqdm, trange
 
 # =========================== convert OT =====================
-dataOT = xlrd.open_workbook('OT.xlsx')
+dataOT = xlrd.open_workbook('ott.xlsx')
 ot = dataOT.sheet_by_index(0)
 ot_convert = xlsxwriter.Workbook('OT_convert.xlsx')
 add_sheet = ot_convert.add_worksheet()
@@ -33,7 +34,7 @@ baocao_del = xlrd.open_workbook('baocao.xlsx')
 data_baocao_del = baocao_del.sheet_by_index(0)
 
 all_rows_baocao_del = []
-for row in range(data_baocao_del.nrows):
+for row in tqdm(range(data_baocao_del.nrows)):
     curr_row = []
     for col in range(data_baocao_del.ncols):
         curr_row.append(data_baocao_del.cell_value(row, col))
@@ -50,7 +51,7 @@ delete_baocao.close()
 
 # =========================== Get data =====================
 
-chamcong = xlrd.open_workbook('data.xlsx')
+chamcong = xlrd.open_workbook('dataa.xlsx')
 data = chamcong.sheet_by_index(0)
 wb = copy(chamcong)
 w_sheet = wb.get_sheet(0)
@@ -102,12 +103,13 @@ mod_baocao.save('baocao.xlsx')
 
 # =========================== Duyệt OT =====================
 
-for i in range(dataOT_approve.nrows):
-    for j in range(data.nrows-3):
-        if dataOT_approve.cell_value(i, 0) == data.cell_value(j+3, 0) and dataOT_approve.cell_value(i, 2) == data.cell_value(j+3, 3):
-            w_sheet.write(j+3, 41,float( data.cell_value(j+3, 32))+float( data.cell_value(j+3, 33)))
+for j in range(data.nrows-3):
+    for i in range(dataOT_approve.nrows):
+        if  dataOT_approve.cell_value(i, 0) == data.cell_value(j+3, 0) and dataOT_approve.cell_value(i, 2) == data.cell_value(j+3, 3):
+            w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 32)))
+            break
         else:
-            w_sheet.write(j+3, 41,float( data.cell_value(j+3, 32))+float( data.cell_value(j+3, 34)))
+            w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29)))
 
 
 
@@ -121,35 +123,35 @@ w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
 
 # =========================== Mã hoá ca =====================
 for m in range(data.nrows-3):
-    if(float(data.cell_value(m+3, 41))>=1):
+    if(float(data.cell_value(m+3, 30))>=1):
         if(data.cell_value(m+3, 5) == "Cuoi tuan Ca Toi"):
-            w_sheet.write(m+3, 42, "CN")
+            w_sheet.write(m+3, 36, "CN")
         elif(data.cell_value(m+3, 5) == "Cuoi tuan Ca Sang"):
-            w_sheet.write(m+3, 42, "CN")
+            w_sheet.write(m+3, 36, "CN")
         else:
-            w_sheet.write(m+3, 42, "RCN")
-    if(float(data.cell_value(m+3, 25))>=5):
-        if(data.cell_value(m+3, 5) == "San xuat sang"):
-            w_sheet.write(m+3, 42, "A")
-        elif(data.cell_value(m+3, 5) == "San xuat toi"):
-            w_sheet.write(m+3, 42, "C")
+            w_sheet.write(m+3, 36, "RCN")
+    if(float(data.cell_value(m+3, 25))>=7):
+        if(data.cell_value(m+3, 5) == "San xuat Sang"):
+            w_sheet.write(m+3, 36, "A")
+        elif(data.cell_value(m+3, 5) == "San xuat Toi"):
+            w_sheet.write(m+3, 36, "C")
         elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
-            w_sheet.write(m+3, 42, "B")
+            w_sheet.write(m+3, 36, "B")
         elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
-            w_sheet.write(m+3, 42, "D")
+            w_sheet.write(m+3, 36, "D")
         else:
-            w_sheet.write(m+3, 42, "RR")
-    elif(float(data.cell_value(m+3, 25))<5 or float(data.cell_value(m+3, 25))>0):
-        if(data.cell_value(m+3, 5) == "San xuat sang"):
-            w_sheet.write(m+3, 42, "R")
-        elif(data.cell_value(m+3, 5) == "San xuat toi"):
-            w_sheet.write(m+3, 42, "R")
+            w_sheet.write(m+3, 36, "RR1")
+    elif(float(data.cell_value(m+3, 25))<7 or float(data.cell_value(m+3, 25))>0):
+        if(data.cell_value(m+3, 5) == "San xuat Sang"):
+            w_sheet.write(m+3, 36, "R")
+        elif(data.cell_value(m+3, 5) == "San xuat Toi"):
+            w_sheet.write(m+3, 36, "R")
         elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
-            w_sheet.write(m+3, 42, "R")
+            w_sheet.write(m+3, 36, "R")
         elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
-            w_sheet.write(m+3, 42, "RR")
+            w_sheet.write(m+3, 36, "RR2")
 
-wb.save('data.xlsx')
+wb.save('dataa.xlsx')
 
 # =========================== Xử lý báo cáo =============================================
 
@@ -162,8 +164,8 @@ for i in range(data_baocao.nrows-7):
         if data_baocao.cell_value(i+7, 0) == data.cell_value(j+3, 0):
             for k in range(0,62,2):
                 if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
-                        w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, 42))
-                        w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, 41))
+                        w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, 36))
+                        w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, 35))
 
 mod_day_baocao.save('baocao.xlsx')
 
@@ -232,5 +234,5 @@ for row in range(1, len(all_rows_baocao)+1):
     for col in range(1, len(all_rows_baocao[0])+1):
         sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
 data_convert.save("report1.xlsx")
-
+print("done")
 

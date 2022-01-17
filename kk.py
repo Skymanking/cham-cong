@@ -1,3 +1,4 @@
-import pandas as pd
-data = pd.read_excel("data1.xlsx")
-print(data.values[1][0])
+from tqdm import tqdm, trange
+for i in tqdm(range(0,1000000)):
+    print(i)
+
