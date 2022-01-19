@@ -151,10 +151,10 @@ for m in range(data.nrows-3):
         elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
             w_sheet.write(m+3, 36, "RR2")
 
-wb.save('dataa.xlsx')
+wb.save('baocao.xlsx')
 
 # =========================== Xử lý báo cáo =============================================
-chamcong = xlrd.open_workbook('dataa.xlsx')
+chamcong = xlrd.open_workbook('baocao.xlsx')
 data = chamcong.sheet_by_index(0)
 wb = copy(chamcong)
 w_sheet = wb.get_sheet(0)
