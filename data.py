@@ -2,11 +2,11 @@ import xlwt
 import xlrd
 from xlutils.copy import copy
 import xlsxwriter
-import datetime
 import collections
 import openpyxl
 from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
+from datetime import date, datetime
 
 # =========================== convert OT =====================
 dataOT = xlrd.open_workbook('ott.xlsx')
@@ -17,8 +17,8 @@ for i in range(ot.nrows-3):
     id = ot.cell_value(i+3, 0)
     date = ot.cell_value(i+3, 4)
     date1 =ot.cell_value(i+3, 5)
-    x =(datetime.datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
-    y =(datetime.datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
+    x =(datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
+    y =(datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
     timeOT = y - x
     hh, mm , ss = map(int, str(timeOT).split(':'))
     ot3 = hh + mm/60
@@ -152,11 +152,15 @@ for m in range(data.nrows-3):
             w_sheet.write(m+3, 36, "RR5")
     else:
         w_sheet.write(m+3, 36, "RR")
+    #Kiem tra thu 7
+    if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, 5) == "Ca Hanh Chính"):
+        if(float(data.cell_value(m+3, 25))>=5):
+            w_sheet.write(m+3, 36, "NT7")
+        else:
+            w_sheet.write(m+3, 36, "")
     #Kiem tra quen cham cong
     if (data.cell_value(m+3, 11) == "None" or data.cell_value(m+3, 12) == "None"):
         w_sheet.write(m+3, 36, "RR")
-        
-
 wb.save('baocao.xlsx')
 
 # =========================== Xử lý báo cáo =============================================

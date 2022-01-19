@@ -7,7 +7,7 @@ import collections
 import openpyxl
 from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
-
+from datetime import date, datetime
 
 chamcong = xlrd.open_workbook('time.xlsx')
 data = chamcong.sheet_by_index(0)
@@ -23,6 +23,5 @@ baocao = xlrd.open_workbook('baocao.xlsx')
 mod_baocao = copy(baocao)
 w_sheet_baocao = mod_baocao.get_sheet(0)
 
-print(data.cell_value(3, 11))
-if(data.cell_value(3, 11)=="None"):
-    print("1")
+print(datetime.strptime(data.cell_value(4, 3), "%Y-%m-%d").weekday()==5)
+print(data.cell_value(3, 5) == "San xuat Sang")

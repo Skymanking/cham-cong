@@ -9,11 +9,10 @@ import xlwt
 import xlrd
 from xlutils.copy import copy
 import xlsxwriter
-import datetime
 import collections
 import openpyxl
 from openpyxl.styles import PatternFill, Alignment
-
+from datetime import date, datetime
 class Giaodien(Frame):
     
     def Clear(self):
@@ -38,25 +37,17 @@ class Giaodien(Frame):
         self.update()
         import time
 
-        data_convert = openpyxl.load_workbook('Template_report.xlsx')
-        sheet_name_data_convert = data_convert.sheetnames[0]
-        sh_data_convert = data_convert[sheet_name_data_convert]
-
-        sh_data_convert.cell(6, 4).value = self.valuemonth.get()
-        sh_data_convert.cell(6, 6).value = self.valueyear.get()
-        data_convert.save("Template_report.xlsx")
-  
-        # =========================== convert OT =====================
-        dataOT = xlrd.open_workbook(GD.filename_OT)
+                # =========================== convert OT =====================
+        dataOT = xlrd.open_workbook('ott.xlsx')
         ot = dataOT.sheet_by_index(0)
         ot_convert = xlsxwriter.Workbook('OT_convert.xlsx')
         add_sheet = ot_convert.add_worksheet()
-        for i in tqdm(range(ot.nrows-3)):
+        for i in range(ot.nrows-3):
             id = ot.cell_value(i+3, 0)
             date = ot.cell_value(i+3, 4)
             date1 =ot.cell_value(i+3, 5)
-            x =(datetime.datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
-            y =(datetime.datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
+            x =(datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
+            y =(datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
             timeOT = y - x
             hh, mm , ss = map(int, str(timeOT).split(':'))
             ot3 = hh + mm/60
@@ -67,13 +58,12 @@ class Giaodien(Frame):
         ot_convert.close()
 
         # =========================== Xoá data =====================
-        
 
         baocao_del = xlrd.open_workbook('baocao.xlsx')
         data_baocao_del = baocao_del.sheet_by_index(0)
 
         all_rows_baocao_del = []
-        for row in range(data_baocao_del.nrows):
+        for row in tqdm(range(data_baocao_del.nrows)):
             curr_row = []
             for col in range(data_baocao_del.ncols):
                 curr_row.append(data_baocao_del.cell_value(row, col))
@@ -90,7 +80,7 @@ class Giaodien(Frame):
 
         # =========================== Get data =====================
 
-        chamcong = xlrd.open_workbook(GD.filename_data)
+        chamcong = xlrd.open_workbook('time.xlsx')
         data = chamcong.sheet_by_index(0)
         wb = copy(chamcong)
         w_sheet = wb.get_sheet(0)
@@ -137,19 +127,18 @@ class Giaodien(Frame):
 
         mod_baocao.save('baocao.xlsx')
 
-        
 
 
 
         # =========================== Duyệt OT =====================
 
-        for j in tqdm(range(data.nrows-3)):
+        for j in range(data.nrows-3):
             for i in range(dataOT_approve.nrows):
                 if  dataOT_approve.cell_value(i, 0) == data.cell_value(j+3, 0) and dataOT_approve.cell_value(i, 2) == data.cell_value(j+3, 3):
                     w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 32)))
                     break
                 else:
-                    w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29)))
+                    w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31)))
 
 
 
@@ -160,18 +149,19 @@ class Giaodien(Frame):
 
         mod_day_baocao = copy(baocao_1)
         w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
-        
 
         # =========================== Mã hoá ca =====================
-        for m in tqdm(range(data.nrows-3)):
+        for m in range(data.nrows-3):
+            #Kiem tra chu nhat
             if(float(data.cell_value(m+3, 30))>=1):
                 if(data.cell_value(m+3, 5) == "Cuoi tuan Ca Toi"):
                     w_sheet.write(m+3, 36, "CN")
                 elif(data.cell_value(m+3, 5) == "Cuoi tuan Ca Sang"):
                     w_sheet.write(m+3, 36, "CN")
                 else:
-                    w_sheet.write(m+3, 36, "RCN")
-            if(float(data.cell_value(m+3, 25))>=7):
+                    w_sheet.write(m+3, 36, "RR")
+            #Kiem tra ca
+            if(float(data.cell_value(m+3, 25))>=5):
                 if(data.cell_value(m+3, 5) == "San xuat Sang"):
                     w_sheet.write(m+3, 36, "A")
                 elif(data.cell_value(m+3, 5) == "San xuat Toi"):
@@ -180,27 +170,38 @@ class Giaodien(Frame):
                     w_sheet.write(m+3, 36, "B")
                 elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
                     w_sheet.write(m+3, 36, "D")
-                else:
-                    w_sheet.write(m+3, 36, "RR1")
-            elif(float(data.cell_value(m+3, 25))<7 or float(data.cell_value(m+3, 25))>0):
+            elif(float(data.cell_value(m+3, 25))<5 or float(data.cell_value(m+3, 25))>=3):
                 if(data.cell_value(m+3, 5) == "San xuat Sang"):
-                    w_sheet.write(m+3, 36, "R")
+                    w_sheet.write(m+3, 36, "RR5")
                 elif(data.cell_value(m+3, 5) == "San xuat Toi"):
-                    w_sheet.write(m+3, 36, "R")
+                    w_sheet.write(m+3, 36, "RR5")
                 elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
-                    w_sheet.write(m+3, 36, "R")
+                    w_sheet.write(m+3, 36, "RR5")
                 elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
-                    w_sheet.write(m+3, 36, "RR2")
-
-        wb.save('dataa.xlsx')
+                    w_sheet.write(m+3, 36, "RR5")
+            else:
+                w_sheet.write(m+3, 36, "RR")
+            #Kiem tra thu 7
+            if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, 5) == "Ca Hanh Chính"):
+                if(float(data.cell_value(m+3, 25))>=5):
+                    w_sheet.write(m+3, 36, "NT7")
+                else:
+                    w_sheet.write(m+3, 36, "")
+            #Kiem tra quen cham cong
+            if (data.cell_value(m+3, 11) == "None" or data.cell_value(m+3, 12) == "None"):
+                w_sheet.write(m+3, 36, "RR")
+        wb.save('baocao.xlsx')
 
         # =========================== Xử lý báo cáo =============================================
-
+        chamcong = xlrd.open_workbook('baocao.xlsx')
+        data = chamcong.sheet_by_index(0)
+        wb = copy(chamcong)
+        w_sheet = wb.get_sheet(0)
 
 
         # # Chuyển ngày
 
-        for i in tqdm(range(data_baocao.nrows-7)):
+        for i in range(data_baocao.nrows-7):
             for j in range(data.nrows-3):
                 if data_baocao.cell_value(i+7, 0) == data.cell_value(j+3, 0):
                     for k in range(0,62,2):
@@ -212,12 +213,11 @@ class Giaodien(Frame):
 
 
 
-        
 
         # =========================== xử lý file mở k được =====================
         #Data
         all_rows_data = []
-        for row in tqdm(range(data.nrows)):
+        for row in range(data.nrows):
             curr_row = []
             for col in range(data.ncols):
                 curr_row.append(data.cell_value(row, col))
@@ -234,25 +234,25 @@ class Giaodien(Frame):
         baocao_2 = xlrd.open_workbook('baocao.xlsx')
         data_baocao = baocao_2.sheet_by_index(0)
 
-        # BAO CAO
-        all_rows_baocao = []
-        for row in tqdm(range(data_baocao.nrows)):
-            curr_row = []
-            for col in range(data_baocao.ncols):
-                curr_row.append(data_baocao.cell_value(row, col))
-            all_rows_baocao.append(curr_row)
+        # # BAO CAO
+        # all_rows_baocao = []
+        # for row in range(data_baocao.nrows):
+        #     curr_row = []
+        #     for col in range(data_baocao.ncols):
+        #         curr_row.append(data_baocao.cell_value(row, col))
+        #     all_rows_baocao.append(curr_row)
 
-        baocao1 = xlsxwriter.Workbook('baocao1.xlsx')
-        data2 = baocao1.add_worksheet()
+        # baocao1 = xlsxwriter.Workbook('baocao1.xlsx')
+        # data2 = baocao1.add_worksheet()
 
-        for row in range(len(all_rows_baocao)):
-            for col in range(len(all_rows_baocao[0])):
-                data2.write(row, col, all_rows_baocao[row][col])
-        baocao1.close()
+        # for row in range(len(all_rows_baocao)):
+        #     for col in range(len(all_rows_baocao[0])):
+        #         data2.write(row, col, all_rows_baocao[row][col])
+        # baocao1.close()
 
 
-        baocao_1 = xlrd.open_workbook('baocao.xlsx')
-        data_baocao = baocao_1.sheet_by_index(0)
+        # baocao_1 = xlrd.open_workbook('baocao.xlsx')
+        # data_baocao = baocao_1.sheet_by_index(0)
 
         # Chuyen du lieu vao report
 
@@ -272,7 +272,7 @@ class Giaodien(Frame):
         rows_data_convert= sh_data_convert.max_row #9
         cols_data_convert = sh_data_convert.max_column #9
 
-        for row in tqdm(range(1, len(all_rows_baocao)+1)):
+        for row in range(1, len(all_rows_baocao)+1):
             for col in range(1, len(all_rows_baocao[0])+1):
                 sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
         data_convert.save("report1.xlsx")
