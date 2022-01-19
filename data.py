@@ -9,6 +9,7 @@ from tqdm import tqdm, trange
 from datetime import date, datetime
 
 # =========================== convert OT =====================
+print("Chuan bi du lieu")
 dataOT = xlrd.open_workbook('ott.xlsx')
 ot = dataOT.sheet_by_index(0)
 ot_convert = xlsxwriter.Workbook('OT_convert.xlsx')
@@ -50,7 +51,7 @@ delete_baocao.close()
 
 
 # =========================== Get data =====================
-
+print("Get data va chuan bi bao cao")
 chamcong = xlrd.open_workbook('dataaa.xlsx')
 data = chamcong.sheet_by_index(0)
 wb = copy(chamcong)
@@ -82,7 +83,7 @@ for y in date_baocao:
 
 colen = 0
 for z in ID_baocao:
-    for j in range(data.nrows -3):
+    for j in tqdm(range(data.nrows -3)):
         if z == data.cell_value(j+3, 0):
             w_sheet_baocao.write(colen+7, 0, data.cell_value(j+3, 0))
             w_sheet_baocao.write(colen+7, 1, data.cell_value(j+3, 1))
@@ -102,8 +103,8 @@ mod_baocao.save('baocao.xlsx')
 
 
 # =========================== Duyệt OT =====================
-
-for j in range(data.nrows-3):
+print("Duyet OT")
+for j in tqdm(range(data.nrows-3)):
     if dataOT_approve.nrows == 0:
         w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31)))
     else:
@@ -120,12 +121,12 @@ for j in range(data.nrows-3):
 
 baocao_1 = xlrd.open_workbook('baocao.xlsx')
 data_baocao = baocao_1.sheet_by_index(0)
-
 mod_day_baocao = copy(baocao_1)
 w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
 
 # =========================== Mã hoá ca =====================
-for m in range(data.nrows-3):
+print("Ma hoa ca va OT")
+for m in tqdm(range(data.nrows-3)):
     #Kiem tra chu nhat
     if(float(data.cell_value(m+3, 30))>=1):
         if(data.cell_value(m+3, 5) == "Cuoi tuan Ca Toi"):
@@ -166,7 +167,9 @@ for m in range(data.nrows-3):
         w_sheet.write(m+3, 36, "RR")
 wb.save('baocao.xlsx')
 
-# =========================== Xử lý báo cáo =============================================
+
+
+# =========================== Chuyển dữ liệu sang report =============================================
 chamcong = xlrd.open_workbook('baocao.xlsx')
 data = chamcong.sheet_by_index(0)
 wb = copy(chamcong)
@@ -174,21 +177,19 @@ w_sheet = wb.get_sheet(0)
 
 
 # # Chuyển ngày
-oi = len(date_baocao)+2
-for i in range(data_baocao.nrows-7):
+print("Chuyen du lieu vao bao cao")
+oi = len(date_baocao)*2
+for i in tqdm(range(data_baocao.nrows-7)):
     for j in range(data.nrows-3):
         if data_baocao.cell_value(i+7, 0) == data.cell_value(j+3, 0):
             for k in range(0,oi,2):
                 if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
                         w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, 36))
                         w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, 35))
-
 mod_day_baocao.save('baocao.xlsx')
 
-
-
-
 # =========================== xử lý file mở k được =====================
+print("Report")
 #Data
 all_rows_data = []
 for row in range(data.nrows):
@@ -228,8 +229,8 @@ baocao1.close()
 baocao_1 = xlrd.open_workbook('baocao.xlsx')
 data_baocao = baocao_1.sheet_by_index(0)
 
-# Chuyen du lieu vao report
 
+# ====================================Chuyen du lieu vao report
 
 all_rows_baocao = []
 for row in range(7 ,data_baocao.nrows):
@@ -246,7 +247,7 @@ sh_data_convert = data_convert[sheet_name_data_convert]
 rows_data_convert= sh_data_convert.max_row #9
 cols_data_convert = sh_data_convert.max_column #9
 
-for row in range(1, len(all_rows_baocao)+1):
+for row in tqdm(range(1, len(all_rows_baocao)+1)):
     for col in range(1, len(all_rows_baocao[0])+1):
         sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
 data_convert.save("report1.xlsx")
