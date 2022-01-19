@@ -51,7 +51,7 @@ delete_baocao.close()
 
 # =========================== Get data =====================
 
-chamcong = xlrd.open_workbook('time.xlsx')
+chamcong = xlrd.open_workbook('dataaa.xlsx')
 data = chamcong.sheet_by_index(0)
 wb = copy(chamcong)
 w_sheet = wb.get_sheet(0)
@@ -174,11 +174,11 @@ w_sheet = wb.get_sheet(0)
 
 
 # # Chuyển ngày
-
+oi = len(date_baocao)+2
 for i in range(data_baocao.nrows-7):
     for j in range(data.nrows-3):
         if data_baocao.cell_value(i+7, 0) == data.cell_value(j+3, 0):
-            for k in range(0,62,2):
+            for k in range(0,oi,2):
                 if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
                         w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, 36))
                         w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, 35))
@@ -208,25 +208,25 @@ chamcong1.close()
 baocao_2 = xlrd.open_workbook('baocao.xlsx')
 data_baocao = baocao_2.sheet_by_index(0)
 
-# # BAO CAO
-# all_rows_baocao = []
-# for row in range(data_baocao.nrows):
-#     curr_row = []
-#     for col in range(data_baocao.ncols):
-#         curr_row.append(data_baocao.cell_value(row, col))
-#     all_rows_baocao.append(curr_row)
+# BAO CAO
+all_rows_baocao = []
+for row in range(data_baocao.nrows):
+    curr_row = []
+    for col in range(data_baocao.ncols):
+        curr_row.append(data_baocao.cell_value(row, col))
+    all_rows_baocao.append(curr_row)
 
-# baocao1 = xlsxwriter.Workbook('baocao1.xlsx')
-# data2 = baocao1.add_worksheet()
+baocao1 = xlsxwriter.Workbook('baocao1.xlsx')
+data2 = baocao1.add_worksheet()
 
-# for row in range(len(all_rows_baocao)):
-#     for col in range(len(all_rows_baocao[0])):
-#         data2.write(row, col, all_rows_baocao[row][col])
-# baocao1.close()
+for row in range(len(all_rows_baocao)):
+    for col in range(len(all_rows_baocao[0])):
+        data2.write(row, col, all_rows_baocao[row][col])
+baocao1.close()
 
 
-# baocao_1 = xlrd.open_workbook('baocao.xlsx')
-# data_baocao = baocao_1.sheet_by_index(0)
+baocao_1 = xlrd.open_workbook('baocao.xlsx')
+data_baocao = baocao_1.sheet_by_index(0)
 
 # Chuyen du lieu vao report
 
