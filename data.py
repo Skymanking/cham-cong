@@ -51,7 +51,7 @@ delete_baocao.close()
 
 # =========================== Get data =====================
 
-chamcong = xlrd.open_workbook('dataa.xlsx')
+chamcong = xlrd.open_workbook('time.xlsx')
 data = chamcong.sheet_by_index(0)
 wb = copy(chamcong)
 w_sheet = wb.get_sheet(0)
@@ -123,14 +123,16 @@ w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
 
 # =========================== Mã hoá ca =====================
 for m in range(data.nrows-3):
+    #Kiem tra chu nhat
     if(float(data.cell_value(m+3, 30))>=1):
         if(data.cell_value(m+3, 5) == "Cuoi tuan Ca Toi"):
             w_sheet.write(m+3, 36, "CN")
         elif(data.cell_value(m+3, 5) == "Cuoi tuan Ca Sang"):
             w_sheet.write(m+3, 36, "CN")
         else:
-            w_sheet.write(m+3, 36, "RCN")
-    if(float(data.cell_value(m+3, 25))>=7):
+            w_sheet.write(m+3, 36, "RR")
+    #Kiem tra ca
+    if(float(data.cell_value(m+3, 25))>=5):
         if(data.cell_value(m+3, 5) == "San xuat Sang"):
             w_sheet.write(m+3, 36, "A")
         elif(data.cell_value(m+3, 5) == "San xuat Toi"):
@@ -139,17 +141,21 @@ for m in range(data.nrows-3):
             w_sheet.write(m+3, 36, "B")
         elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
             w_sheet.write(m+3, 36, "D")
-        else:
-            w_sheet.write(m+3, 36, "RR1")
-    elif(float(data.cell_value(m+3, 25))<7 or float(data.cell_value(m+3, 25))>0):
+    elif(float(data.cell_value(m+3, 25))<5 or float(data.cell_value(m+3, 25))>=3):
         if(data.cell_value(m+3, 5) == "San xuat Sang"):
-            w_sheet.write(m+3, 36, "R")
+            w_sheet.write(m+3, 36, "RR5")
         elif(data.cell_value(m+3, 5) == "San xuat Toi"):
-            w_sheet.write(m+3, 36, "R")
+            w_sheet.write(m+3, 36, "RR5")
         elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
-            w_sheet.write(m+3, 36, "R")
+            w_sheet.write(m+3, 36, "RR5")
         elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
-            w_sheet.write(m+3, 36, "RR2")
+            w_sheet.write(m+3, 36, "RR5")
+    else:
+        w_sheet.write(m+3, 36, "RR")
+    #Kiem tra quen cham cong
+    if (data.cell_value(m+3, 11) == "None" or data.cell_value(m+3, 12) == "None"):
+        w_sheet.write(m+3, 36, "RR")
+        
 
 wb.save('baocao.xlsx')
 
@@ -195,25 +201,25 @@ chamcong1.close()
 baocao_2 = xlrd.open_workbook('baocao.xlsx')
 data_baocao = baocao_2.sheet_by_index(0)
 
-# BAO CAO
-all_rows_baocao = []
-for row in range(data_baocao.nrows):
-    curr_row = []
-    for col in range(data_baocao.ncols):
-        curr_row.append(data_baocao.cell_value(row, col))
-    all_rows_baocao.append(curr_row)
+# # BAO CAO
+# all_rows_baocao = []
+# for row in range(data_baocao.nrows):
+#     curr_row = []
+#     for col in range(data_baocao.ncols):
+#         curr_row.append(data_baocao.cell_value(row, col))
+#     all_rows_baocao.append(curr_row)
 
-baocao1 = xlsxwriter.Workbook('baocao1.xlsx')
-data2 = baocao1.add_worksheet()
+# baocao1 = xlsxwriter.Workbook('baocao1.xlsx')
+# data2 = baocao1.add_worksheet()
 
-for row in range(len(all_rows_baocao)):
-    for col in range(len(all_rows_baocao[0])):
-        data2.write(row, col, all_rows_baocao[row][col])
-baocao1.close()
+# for row in range(len(all_rows_baocao)):
+#     for col in range(len(all_rows_baocao[0])):
+#         data2.write(row, col, all_rows_baocao[row][col])
+# baocao1.close()
 
 
-baocao_1 = xlrd.open_workbook('baocao.xlsx')
-data_baocao = baocao_1.sheet_by_index(0)
+# baocao_1 = xlrd.open_workbook('baocao.xlsx')
+# data_baocao = baocao_1.sheet_by_index(0)
 
 # Chuyen du lieu vao report
 
