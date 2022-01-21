@@ -8,6 +8,8 @@ from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
 def xuly(namedata, nameOT, valueyear, valuemounth):
+    def myround(x, base=0.5):
+        return base * round(float(x) / base)
     # =========================== convert OT =====================
     print("Chuan bi du lieu")
     dataOT = xlrd.open_workbook(nameOT)
@@ -106,14 +108,14 @@ def xuly(namedata, nameOT, valueyear, valuemounth):
     print("Duyet OT")
     for j in tqdm(range(data.nrows-3)):
         if dataOT_approve.nrows == 0:
-            w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31)))
+            w_sheet.write(j+3, 35,myround(float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31))))
         else:
             for i in range(dataOT_approve.nrows):
                 if  dataOT_approve.cell_value(i, 0) == data.cell_value(j+3, 0) and dataOT_approve.cell_value(i, 2) == data.cell_value(j+3, 3):
-                    w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 32)))
+                    w_sheet.write(j+3, 35, myround(float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 32))))
                     break
                 else:
-                    w_sheet.write(j+3, 35,float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31)))
+                    w_sheet.write(j+3, 35, myround(float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31))))
 
 
 
@@ -127,14 +129,7 @@ def xuly(namedata, nameOT, valueyear, valuemounth):
     # =========================== Mã hoá ca =====================
     print("Ma hoa ca va OT")
     for m in tqdm(range(data.nrows-3)):
-        #Kiem tra chu nhat
-        if(float(data.cell_value(m+3, 30))>=1):
-            if(data.cell_value(m+3, 5) == "Cuoi tuan Ca Toi"):
-                w_sheet.write(m+3, 36, "CN")
-            elif(data.cell_value(m+3, 5) == "Cuoi tuan Ca Sang"):
-                w_sheet.write(m+3, 36, "CN")
-            else:
-                w_sheet.write(m+3, 36, "RR")
+
         #Kiem tra ca
         if(float(data.cell_value(m+3, 25))>=5):
             if(data.cell_value(m+3, 5) == "San xuat Sang"):
@@ -158,13 +153,20 @@ def xuly(namedata, nameOT, valueyear, valuemounth):
             w_sheet.write(m+3, 36, "RR")
         #Kiem tra thu 7
         if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, 5) == "Ca Hanh Chính"):
-            if(float(data.cell_value(m+3, 25))>=5):
-                w_sheet.write(m+3, 36, "NT7")
+            if(float(data.cell_value(m+3, 25))<5):
+                w_sheet.write(m+3, 36, "nt7")
+            else:
+                w_sheet.write(m+3, 36, "D")
+        #Kiem tra chu nhat
+        if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==6 and (data.cell_value(m+3, 5) == "Cuoi tuan Ca Sang" or data.cell_value(m+3, 5) == "Cuoi tuan Ca Toi")):
+            if(float(data.cell_value(m+3, 30)) > 1 ):
+                w_sheet.write(m+3, 36, "CN")
             else:
                 w_sheet.write(m+3, 36, "")
         #Kiem tra quen cham cong
         if (data.cell_value(m+3, 11) == "None" or data.cell_value(m+3, 12) == "None"):
             w_sheet.write(m+3, 36, "RR")
+
     wb.save('baocao.xlsx')
 
 

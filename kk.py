@@ -1,16 +1,4 @@
-import json
-import requests
+def myround(x, base=0.5):
+    return base * round(float(x) / base)
 
-
-url = "http://chamcong.pte.vn:8888/api-token-auth/"
-headers = {
-    "Content-Type": "application/json",
-}
-data = {
-    "username": "admin",
-    "password": "admin123"
-}
-
-response = requests.post(url, data=json.dumps(data), headers=headers)
-print(response.text)
-
+print(myround(1.7))
