@@ -7,10 +7,10 @@ import openpyxl
 from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
-def xuly():
+def xuly(namedata, nameOT, valueyear, valuemounth):
     # =========================== convert OT =====================
     print("Chuan bi du lieu")
-    dataOT = xlrd.open_workbook('ott.xlsx')
+    dataOT = xlrd.open_workbook(nameOT)
     ot = dataOT.sheet_by_index(0)
     ot_convert = xlsxwriter.Workbook('OT_convert.xlsx')
     add_sheet = ot_convert.add_worksheet()
@@ -52,7 +52,7 @@ def xuly():
 
     # =========================== Get data =====================
     print("Get data va chuan bi bao cao")
-    chamcong = xlrd.open_workbook('dataaa.xlsx')
+    chamcong = xlrd.open_workbook(namedata)
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
@@ -244,8 +244,8 @@ def xuly():
     sheet_name_data_convert = data_convert.sheetnames[0]
     sh_data_convert = data_convert[sheet_name_data_convert]
 
-    rows_data_convert= sh_data_convert.max_row #9
-    cols_data_convert = sh_data_convert.max_column #9
+    sh_data_convert.cell(6, 4).value = "1"
+    sh_data_convert.cell(6, 6).value = "2022"
 
     for row in tqdm(range(1, len(all_rows_baocao)+1)):
         for col in range(1, len(all_rows_baocao[0])+1):

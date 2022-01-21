@@ -1,27 +1,16 @@
-import xlwt
-import xlrd
-from xlutils.copy import copy
-import xlsxwriter
-import datetime
-import collections
-import openpyxl
-from openpyxl.styles import PatternFill, Alignment
-from tqdm import tqdm, trange
-from datetime import date, datetime
+import json
+import requests
 
-chamcong = xlrd.open_workbook('time.xlsx')
-data = chamcong.sheet_by_index(0)
-wb = copy(chamcong)
-w_sheet = wb.get_sheet(0)
 
-OT_approve = xlrd.open_workbook('OT_convert.xlsx')
-dataOT_approve = OT_approve.sheet_by_index(0)
+url = "http://chamcong.pte.vn:8888/api-token-auth/"
+headers = {
+    "Content-Type": "application/json",
+}
+data = {
+    "username": "admin",
+    "password": "admin123"
+}
 
-#Tạo template báo cáo
+response = requests.post(url, data=json.dumps(data), headers=headers)
+print(response.text)
 
-baocao = xlrd.open_workbook('baocao.xlsx')
-mod_baocao = copy(baocao)
-w_sheet_baocao = mod_baocao.get_sheet(0)
-
-print(datetime.strptime(data.cell_value(4, 3), "%Y-%m-%d").weekday()==5)
-print(data.cell_value(3, 5) == "San xuat Sang")

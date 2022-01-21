@@ -3,16 +3,6 @@ from tkinter import *
 from tkinter.ttk import *
 import tkinter.ttk as cm
 from tkinter import filedialog
-from tqdm import tqdm, trange
-from xlutils.filter import process
-import xlwt
-import xlrd
-from xlutils.copy import copy
-import xlsxwriter
-import collections
-import openpyxl
-from openpyxl.styles import PatternFill, Alignment
-from datetime import date, datetime
 from data import xuly
 class Giaodien(Frame):
     
@@ -36,14 +26,8 @@ class Giaodien(Frame):
 
     def Chon(self):
         self.update()
-        import time
-
-        xuly()
+        xuly( GD.filename_data, GD.filename_OT, self.valueyear, self.valuemonth)
     
-
- 
-
-
     def __init__(self, master):
         super().__init__(master)
         self.Company = cm.Label(self, text = "HPT", font = ("Time New Roman", 30))
@@ -113,7 +97,7 @@ class Giaodien(Frame):
 
 GD = Tk()
 
-GD.title("GROUP 4")
+GD.title("CHAM CONG")
 GD.geometry('800x600+0+0')
 GD.configure(bg = 'red')
 sky = Giaodien(GD)
