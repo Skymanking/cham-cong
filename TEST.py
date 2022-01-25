@@ -26,7 +26,7 @@ class Giaodien(Frame):
 
     def Chon(self):
         self.update()
-        xuly( GD.filename_data, GD.filename_OT, self.valueyear, self.valuemonth)
+        xuly(GD.filename_data, GD.filename_OT, self.valueyear, self.valuemonth)
     
     def __init__(self, master):
         super().__init__(master)
@@ -55,16 +55,12 @@ class Giaodien(Frame):
         self.data_nhanvien_link = cm.Label(self, text = "", font = ("Time New Roman", 12))
         self.button_nhanvien=cm.Button(self, text = "Chọn file", command = self.Open_nhanvien)
 
-
-
         self.Clear=cm.Button(self, text = "Clear data", command = self.Clear)
         self.Run = cm.Button(self, text = "RUN", command = self.Chon)
         master.bind("<Configure>", self.placeGD)
 
     def placeGD (self, even):
         self.update()
-        selfW = self.winfo_width()
-        selfH = self.winfo_height()
 
         self.Company.place(height = 100, width = 170, x = 30, y = 10)
         self.Title.place(height = 50, width = 350, x =270 , y = 50)
@@ -92,8 +88,6 @@ class Giaodien(Frame):
         self.Run.place(height = 100, width = 100, x = 680, y = 480)
 
         self.Clear.place(height = 40, width = 100, x =55 , y = 520)
-
-
 
 GD = Tk()
 
