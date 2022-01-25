@@ -118,8 +118,8 @@ def xuly(namedata, nameOT, valueyear, valuemounth):
                     w_sheet.write(j+3, 35, myround(float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31))))
     
     for j in tqdm(range(data.nrows-3)):
-        if ((float( data.cell_value(j+3, 29)) + float( data.cell_value(j+3, 32))) > float( data.cell_value(j+3, 35))+2):
-            print(float( data.cell_value(j+3, 29)))
+        otTime = (float( data.cell_value(j+3, 29)) + float( data.cell_value(j+3, 30)) + float( data.cell_value(j+3, 31)))
+        if ((otTime) <= (otTime + float( data.cell_value(j+3, 32)) - 2)):
             w_sheet.write(j+3, 35,"RR")
 
 
