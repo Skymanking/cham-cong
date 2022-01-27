@@ -92,9 +92,9 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             if z == sh_nhanvien.cell_value(j+3, 0):
                 w_sheet_baocao.write(colen+7, 0, sh_nhanvien.cell_value(j+3, 0))
                 w_sheet_baocao.write(colen+7, 1, sh_nhanvien.cell_value(j+3, 1))
-                w_sheet_baocao.write(colen+7, 2, sh_nhanvien.cell_value(j+3, 2))
-                w_sheet_baocao.write(colen+7, 3, "")
-                w_sheet_baocao.write(colen+7, 4, sh_nhanvien.cell_value(j+3, 5))
+                w_sheet_baocao.write(colen+7, 2, sh_nhanvien.cell_value(j+3, 3))
+                w_sheet_baocao.write(colen+7, 3, sh_nhanvien.cell_value(j+3, 2))
+                w_sheet_baocao.write(colen+7, 4, sh_nhanvien.cell_value(j+3, 6))
                 w_sheet_baocao.write(colen+7, 5, "")
                 colen = colen+1
                 break
@@ -105,6 +105,9 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
 
     mod_baocao.save('baocao.xlsx')
 
+    baocao = xlrd.open_workbook('baocao.xlsx')
+    mod_baocao = copy(baocao)
+    w_sheet_baocao = mod_baocao.get_sheet(0)
 
 
 
@@ -160,7 +163,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
         else:
             w_sheet.write(m+3, 36, "RR")
         #Kiem tra thu 7
-        if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, 5) == "Ca Hanh Chính"):
+        if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, 22) == "Gián Tiếp"):
             if(float(data.cell_value(m+3, 25))<5):
                 w_sheet.write(m+3, 36, "nt7")
             else:
