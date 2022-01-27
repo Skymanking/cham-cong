@@ -7,7 +7,7 @@ import openpyxl
 from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
-def xuly(namedata, nameOT, valueyear, valuemounth):
+def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
     def myround(x, base=0.5):
         return base * round(float(x) / base)
     # =========================== convert OT =====================
@@ -83,18 +83,22 @@ def xuly(namedata, nameOT, valueyear, valuemounth):
         w_sheet_baocao.write(5, colen2+6, y)
         colen2 = colen2+2
 
+    nhanvien = xlrd.open_workbook(namenhanvien)
+    sh_nhanvien = nhanvien.sheet_by_index(0)
+
     colen = 0
     for z in ID_baocao:
         for j in range(data.nrows -3):
-            if z == data.cell_value(j+3, 0):
-                w_sheet_baocao.write(colen+7, 0, data.cell_value(j+3, 0))
-                w_sheet_baocao.write(colen+7, 1, data.cell_value(j+3, 1))
-                w_sheet_baocao.write(colen+7, 2, data.cell_value(j+3, 2))
-                w_sheet_baocao.write(colen+7, 3, data.cell_value(j+3, 3))
-                w_sheet_baocao.write(colen+7, 4, data.cell_value(j+3, 4))
-                w_sheet_baocao.write(colen+7, 5, data.cell_value(j+3, 5))
+            if z == sh_nhanvien.cell_value(j+3, 0):
+                w_sheet_baocao.write(colen+7, 0, sh_nhanvien.cell_value(j+3, 0))
+                w_sheet_baocao.write(colen+7, 1, sh_nhanvien.cell_value(j+3, 1))
+                w_sheet_baocao.write(colen+7, 2, sh_nhanvien.cell_value(j+3, 2))
+                w_sheet_baocao.write(colen+7, 3, "")
+                w_sheet_baocao.write(colen+7, 4, sh_nhanvien.cell_value(j+3, 5))
+                w_sheet_baocao.write(colen+7, 5, "")
                 colen = colen+1
                 break
+  
 
     for o in range(1,1):
         w_sheet_baocao.write(5, o+67, o)
@@ -236,6 +240,8 @@ def xuly(namedata, nameOT, valueyear, valuemounth):
     data_baocao = baocao_1.sheet_by_index(0)
 
 
+
+
     # ====================================Chuyen du lieu vao report
 
     all_rows_baocao = []
@@ -245,16 +251,15 @@ def xuly(namedata, nameOT, valueyear, valuemounth):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-
     data_convert = openpyxl.load_workbook('Template_report.xlsx')
     sheet_name_data_convert = data_convert.sheetnames[0]
     sh_data_convert = data_convert[sheet_name_data_convert]
-
     sh_data_convert.cell(6, 4).value = "1"
     sh_data_convert.cell(6, 6).value = "2022"
+
 
     for row in tqdm(range(1, len(all_rows_baocao)+1)):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
     data_convert.save("report1.xlsx")
-    print("done")
+    print("done")              

@@ -26,7 +26,7 @@ class Giaodien(Frame):
 
     def Chon(self):
         self.update()
-        xuly(GD.filename_data, GD.filename_OT, self.valueyear, self.valuemonth)
+        xuly(GD.filename_data, GD.filename_OT, GD.filename_nhanvien, self.valueyear, self.valuemonth)
     
     def __init__(self, master):
         super().__init__(master)
