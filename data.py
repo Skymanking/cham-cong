@@ -162,22 +162,25 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
                 w_sheet.write(m+3, 36, "RR5")
         else:
             w_sheet.write(m+3, 36, "RR")
+ 
+         #Kiem tra quen cham cong
+        if (data.cell_value(m+3, 11) == "None" or data.cell_value(m+3, 12) == "None"):
+            w_sheet.write(m+3, 36, "RR")
+ 
         #Kiem tra thu 7
         if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, 22) == "Gián Tiếp"):
             if(float(data.cell_value(m+3, 25))<5):
                 w_sheet.write(m+3, 36, "nt7")
             else:
                 w_sheet.write(m+3, 36, "D")
+
         #Kiem tra chu nhat
-        if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==6 and (data.cell_value(m+3, 5) == "Cuoi tuan Ca Sang" or data.cell_value(m+3, 5) == "Cuoi tuan Ca Toi")):
+        if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==6):
             if(float(data.cell_value(m+3, 30)) > 1 ):
                 w_sheet.write(m+3, 36, "CN")
             else:
                 w_sheet.write(m+3, 36, "")
-        #Kiem tra quen cham cong
-        if (data.cell_value(m+3, 11) == "None" or data.cell_value(m+3, 12) == "None"):
-            w_sheet.write(m+3, 36, "RR")
-
+ 
     wb.save('baocao.xlsx')
 
 
