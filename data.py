@@ -28,6 +28,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
         d = x.strftime("%Y-%m-%d")
         add_sheet.write(i,0, str(id))
         add_sheet.write(i,1, ot3)
+        
         add_sheet.write(i,2, d)
     ot_convert.close()
 
