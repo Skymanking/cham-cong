@@ -32,6 +32,8 @@ class Giaodien(Frame):
         super().__init__(master)
         self.Company = cm.Label(self, text = "HPT", font = ("Time New Roman", 30))
 
+
+
         self.Title = cm.Label(self, text = "BẢNG CHẤM CÔNG", font = ("Time New Roman", 24))
         self.Month = cm.Label(self, text = "THÁNG: ", font = ("Time New Roman", 24))
 

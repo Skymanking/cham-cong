@@ -78,7 +78,6 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
     d = collections.Counter(colect_date)
     ID_baocao = c.keys()
     date_baocao = d.keys()
-
     colen2 = 0
     for y in date_baocao:
         w_sheet_baocao.write(5, colen2+6, y)
@@ -99,6 +98,8 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
                 w_sheet_baocao.write(colen+7, 5, "")
                 colen = colen+1
                 break
+            else:
+                continue
   
 
     for o in range(1,1):
@@ -205,6 +206,28 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
                             w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, 35))
     mod_day_baocao.save('baocao.xlsx')
 
+    print("Chuyen du lieu vao bao cao vi pham")
+    oi = len(date_baocao)*2
+    for i in tqdm(range(data_baocao.nrows-7)):
+        for j in range(data.nrows-3):
+            if data_baocao.cell_value(i+7, 0) == data.cell_value(j+3, 0):
+                for k in range(0,oi,2):
+                    if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
+                        if data.cell_value(j+3, 11) == "None":
+                            w_sheet_baocao.write(i+7,  k+6, "QCC")
+                        elif data.cell_value(j+3, 26) != "":
+                            kll = float(data.cell_value(j+3, 26))
+                            w_sheet_baocao.write(i+7,  k+6, kll)
+                        if data.cell_value(j+3, 12) == "None":
+                            w_sheet_baocao.write(i+7,  k+7, "QCC")
+                        elif data.cell_value(j+3, 27) != "":
+                            kl = float(data.cell_value(j+3, 27))
+                            w_sheet_baocao.write(i+7,  k+7, kl)
+                        if data.cell_value(j+3, 11) == "None" and data.cell_value(j+3, 12) == "None":
+                            w_sheet_baocao.write(i+7,  k+6, "Nghi")
+                            w_sheet_baocao.write(i+7,  k+7, "")
+    mod_baocao.save('baocaovipham.xlsx')
+
     # =========================== xử lý file mở k được =====================
     print("Report")
     #Data
@@ -249,9 +272,11 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
 
 
 
-    # ====================================Chuyen du lieu vao report
-
+    # ====================================Chuyen du lieu vao report==========================
+    baocao_2 = xlrd.open_workbook('baocao.xlsx')
+    data_baocao = baocao_2.sheet_by_index(0)
     all_rows_baocao = []
+    
     for row in range(7 ,data_baocao.nrows):
         curr_row = []
         for col in range(data_baocao.ncols):
@@ -269,4 +294,50 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
     data_convert.save("report1.xlsx")
+
+    # BAO CAO Vi PHAM
+    
+    baocao_1 = xlrd.open_workbook('baocaovipham.xlsx')
+    data_baocao = baocao_1.sheet_by_index(0)
+
+    all_rows_baocao = []
+    for row in range(data_baocao.nrows):
+        curr_row = []
+        for col in range(data_baocao.ncols):
+            curr_row.append(data_baocao.cell_value(row, col))
+        all_rows_baocao.append(curr_row)
+
+    baocao1 = xlsxwriter.Workbook('baocaovipham1.xlsx')
+    data2 = baocao1.add_worksheet()
+
+    for row in range(len(all_rows_baocao)):
+        for col in range(len(all_rows_baocao[0])):
+            data2.write(row, col, all_rows_baocao[row][col])
+    baocao1.close()
+
+
+
+
+
+
+    # ====================================Chuyen du lieu vao report vi pham==========================
+
+    all_rows_baocao = []
+    for row in range(7 ,data_baocao.nrows):
+        curr_row = []
+        for col in range(data_baocao.ncols):
+            curr_row.append(data_baocao.cell_value(row, col))
+        all_rows_baocao.append(curr_row)
+
+    data_convert = openpyxl.load_workbook('Template_report_vipham.xlsx')
+    sheet_name_data_convert = data_convert.sheetnames[0]
+    sh_data_convert = data_convert[sheet_name_data_convert]
+    sh_data_convert.cell(6, 4).value = "1"
+    sh_data_convert.cell(6, 6).value = "2022"
+
+
+    for row in tqdm(range(1, len(all_rows_baocao)+1)):
+        for col in range(1, len(all_rows_baocao[0])+1):
+            sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
+    data_convert.save("report2.xlsx")
     print("done")              
