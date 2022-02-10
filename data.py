@@ -7,14 +7,14 @@ import openpyxl
 from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
-def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
+def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     def myround(x, base=0.5):
         return base * round(float(x) / base)
     # =========================== convert OT =====================
     print("Chuan bi du lieu")
     dataOT = xlrd.open_workbook(nameOT)
     ot = dataOT.sheet_by_index(0)
-    ot_convert = xlsxwriter.Workbook('OT_convert.xlsx')
+    ot_convert = xlsxwriter.Workbook('../cham-cong/convert/OT_convert.xlsx')
     add_sheet = ot_convert.add_worksheet()
     for i in range(ot.nrows-3):
         id = ot.cell_value(i+3, 0)
@@ -34,7 +34,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
 
     # =========================== Xoá data =====================
 
-    baocao_del = xlrd.open_workbook('baocao.xlsx')
+    baocao_del = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data_baocao_del = baocao_del.sheet_by_index(0)
 
     all_rows_baocao_del = []
@@ -44,7 +44,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             curr_row.append(data_baocao_del.cell_value(row, col))
         all_rows_baocao_del.append(curr_row)
 
-    delete_baocao = xlsxwriter.Workbook('baocao.xlsx')
+    delete_baocao = xlsxwriter.Workbook('../cham-cong/convert/baocao.xlsx')
     delete = delete_baocao.add_worksheet()
 
     for row in range(len(all_rows_baocao_del)):
@@ -60,12 +60,12 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
 
-    OT_approve = xlrd.open_workbook('OT_convert.xlsx')
+    OT_approve = xlrd.open_workbook('../cham-cong/convert/OT_convert.xlsx')
     dataOT_approve = OT_approve.sheet_by_index(0)
 
     #Tạo template báo cáo
 
-    baocao = xlrd.open_workbook('baocao.xlsx')
+    baocao = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     mod_baocao = copy(baocao)
     w_sheet_baocao = mod_baocao.get_sheet(0)
 
@@ -105,9 +105,9 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
     for o in range(1,1):
         w_sheet_baocao.write(5, o+67, o)
 
-    mod_baocao.save('baocao.xlsx')
+    mod_baocao.save('../cham-cong/convert/baocao.xlsx')
 
-    baocao = xlrd.open_workbook('baocao.xlsx')
+    baocao = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     mod_baocao = copy(baocao)
     w_sheet_baocao = mod_baocao.get_sheet(0)
 
@@ -134,7 +134,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
 
 
 
-    baocao_1 = xlrd.open_workbook('baocao.xlsx')
+    baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data_baocao = baocao_1.sheet_by_index(0)
     mod_day_baocao = copy(baocao_1)
     w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
@@ -183,12 +183,12 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             else:
                 w_sheet.write(m+3, 36, "")
  
-    wb.save('baocao.xlsx')
+    wb.save('../cham-cong/convert/baocao.xlsx')
 
 
 
     # =========================== Chuyển dữ liệu sang report =============================================
-    chamcong = xlrd.open_workbook('baocao.xlsx')
+    chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
@@ -204,7 +204,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
                     if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
                             w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, 36))
                             w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, 35))
-    mod_day_baocao.save('baocao.xlsx')
+    mod_day_baocao.save('../cham-cong/convert/baocao.xlsx')
 
     print("Chuyen du lieu vao bao cao vi pham")
     oi = len(date_baocao)*2
@@ -226,7 +226,10 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
                         if data.cell_value(j+3, 11) == "None" and data.cell_value(j+3, 12) == "None":
                             w_sheet_baocao.write(i+7,  k+6, "Nghi")
                             w_sheet_baocao.write(i+7,  k+7, "")
-    mod_baocao.save('baocaovipham.xlsx')
+                        if data.cell_value(j+3, 11) == "None" and data.cell_value(j+3, 12) == "None" and data.cell_value(j+3, 5) == "":
+                            w_sheet_baocao.write(i+7,  k+6, "")
+                    
+    mod_baocao.save('../cham-cong/convert/baocaovipham.xlsx')
 
     # =========================== xử lý file mở k được =====================
     print("Report")
@@ -238,7 +241,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             curr_row.append(data.cell_value(row, col))
         all_rows_data.append(curr_row)
 
-    chamcong1 = xlsxwriter.Workbook('data1.xlsx')
+    chamcong1 = xlsxwriter.Workbook("../cham-cong/convert/data.xlsx")
     data1 = chamcong1.add_worksheet()
 
     for row in range(len(all_rows_data)):
@@ -246,7 +249,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             data1.write(row, col, all_rows_data[row][col])
     chamcong1.close()
 
-    baocao_2 = xlrd.open_workbook('baocao.xlsx')
+    baocao_2 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data_baocao = baocao_2.sheet_by_index(0)
 
     # BAO CAO
@@ -257,7 +260,7 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-    baocao1 = xlsxwriter.Workbook('baocao1.xlsx')
+    baocao1 = xlsxwriter.Workbook('../cham-cong/convert/baocao1.xlsx')
     data2 = baocao1.add_worksheet()
 
     for row in range(len(all_rows_baocao)):
@@ -266,14 +269,12 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
     baocao1.close()
 
 
-    baocao_1 = xlrd.open_workbook('baocao.xlsx')
+    baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data_baocao = baocao_1.sheet_by_index(0)
 
 
-
-
     # ====================================Chuyen du lieu vao report==========================
-    baocao_2 = xlrd.open_workbook('baocao.xlsx')
+    baocao_2 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data_baocao = baocao_2.sheet_by_index(0)
     all_rows_baocao = []
     
@@ -283,21 +284,21 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-    data_convert = openpyxl.load_workbook('Template_report.xlsx')
+    data_convert = openpyxl.load_workbook('../cham-cong/template/Template_report.xlsx')
     sheet_name_data_convert = data_convert.sheetnames[0]
     sh_data_convert = data_convert[sheet_name_data_convert]
-    sh_data_convert.cell(6, 4).value = "1"
-    sh_data_convert.cell(6, 6).value = "2022"
+    sh_data_convert.cell(6, 4).value = text_thang*1
+    sh_data_convert.cell(6, 6).value = text_nam*1
 
 
     for row in tqdm(range(1, len(all_rows_baocao)+1)):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
-    data_convert.save("report1.xlsx")
+    data_convert.save("../cham-cong/report/chamcong"+"_thang"+text_thang+"_nam"+text_nam +".xlsx")
 
     # BAO CAO Vi PHAM
     
-    baocao_1 = xlrd.open_workbook('baocaovipham.xlsx')
+    baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocaovipham.xlsx')
     data_baocao = baocao_1.sheet_by_index(0)
 
     all_rows_baocao = []
@@ -307,18 +308,13 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-    baocao1 = xlsxwriter.Workbook('baocaovipham1.xlsx')
+    baocao1 = xlsxwriter.Workbook("../cham-cong/convert/baocaovipham.xlsx")
     data2 = baocao1.add_worksheet()
 
     for row in range(len(all_rows_baocao)):
         for col in range(len(all_rows_baocao[0])):
             data2.write(row, col, all_rows_baocao[row][col])
     baocao1.close()
-
-
-
-
-
 
     # ====================================Chuyen du lieu vao report vi pham==========================
 
@@ -329,15 +325,15 @@ def xuly(namedata, nameOT,namenhanvien, valueyear, valuemounth):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-    data_convert = openpyxl.load_workbook('Template_report_vipham.xlsx')
+    data_convert = openpyxl.load_workbook('../cham-cong/template/Template_report_vipham.xlsx')
     sheet_name_data_convert = data_convert.sheetnames[0]
     sh_data_convert = data_convert[sheet_name_data_convert]
-    sh_data_convert.cell(6, 4).value = "1"
-    sh_data_convert.cell(6, 6).value = "2022"
+    sh_data_convert.cell(6, 4).value = text_thang*1
+    sh_data_convert.cell(6, 6).value = text_nam*1
 
 
     for row in tqdm(range(1, len(all_rows_baocao)+1)):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
-    data_convert.save("report2.xlsx")
+    data_convert.save("../cham-cong/report/baocao_vipham"+"_thang"+text_thang+"_nam"+text_nam + ".xlsx")
     print("done")              

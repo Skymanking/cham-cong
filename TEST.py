@@ -4,10 +4,15 @@ from tkinter.ttk import *
 import tkinter.ttk as cm
 from tkinter import filedialog
 from data import xuly
+from datetime import datetime
+dem = 0
 class Giaodien(Frame):
-    
+
     def Clear(self):
         self.update()
+        self.data_nhanvien_link['text'] = " " 
+        self.data_OT_link['text'] = " " 
+        self.data_chamcong_link['text'] = " " 
 
     def Open_data(self):
         self.update()
@@ -26,23 +31,30 @@ class Giaodien(Frame):
 
     def Chon(self):
         self.update()
-        xuly(GD.filename_data, GD.filename_OT, GD.filename_nhanvien, self.valueyear, self.valuemonth)
+        def timerun():
+            global dem
+            dem += 1
+            self.countdown['text'] = "Thoi gian: " + str(dem)
+            GD.after(1000, timerun)
+        timerun()
+        xuly(GD.filename_data, GD.filename_OT, GD.filename_nhanvien, GD.text_nam.get(), GD.text_thang.get())
+        self.thongbao['text'] = "XONG "
     
     def __init__(self, master):
         super().__init__(master)
+        GD.text_thang = StringVar()
+        GD.text_nam = StringVar()
         self.Company = cm.Label(self, text = "HPT", font = ("Time New Roman", 30))
-
-
 
         self.Title = cm.Label(self, text = "BẢNG CHẤM CÔNG", font = ("Time New Roman", 24))
         self.Month = cm.Label(self, text = "THÁNG: ", font = ("Time New Roman", 24))
 
         self.month_title = cm.Label(self, text = "Tháng", font = ("Time New Roman", 12))
-        self.valuemonth = cm.Combobox(self) 
+        self.valuemonth = cm.Combobox(self, textvariable= GD.text_thang) 
         self.valuemonth['value'] = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
 
         self.year_title = cm.Label(self, text = "Năm", font = ("Time New Roman", 12))
-        self.valueyear = cm.Combobox(self) 
+        self.valueyear = cm.Combobox(self, textvariable= GD.text_nam) 
         self.valueyear['value'] = ("2021","2022","2023","2024")
         
         self.data_chamcong = cm.Label(self, text = "Chọn file cham cong:", font = ("Time New Roman", 12))
@@ -56,6 +68,10 @@ class Giaodien(Frame):
         self.data_nhanvien = cm.Label(self, text = "Chọn file Nhân Viên:", font = ("Time New Roman", 12))
         self.data_nhanvien_link = cm.Label(self, text = "", font = ("Time New Roman", 12))
         self.button_nhanvien=cm.Button(self, text = "Chọn file", command = self.Open_nhanvien)
+
+        self.thongbao = cm.Label(self, text = "", font = ("Time New Roman", 36))
+
+        self.countdown = cm.Label(self, text = "", font = ("Time New Roman", 12))
 
         self.Clear=cm.Button(self, text = "Clear data", command = self.Clear)
         self.Run = cm.Button(self, text = "RUN", command = self.Chon)
@@ -86,13 +102,15 @@ class Giaodien(Frame):
         self.button_nhanvien.place(height = 25, width = 70, x = 10, y = 405)
         self.data_nhanvien_link.place(height = 40, width = 700, x =170 , y = 370)
 
+        self.thongbao.place(height = 60, width = 700, x =250 , y = 450)
+
+        self.countdown.place(height = 60, width = 700, x =250 , y = 500)
 
         self.Run.place(height = 100, width = 100, x = 680, y = 480)
 
         self.Clear.place(height = 40, width = 100, x =55 , y = 520)
 
 GD = Tk()
-
 GD.title("CHAM CONG")
 GD.geometry('800x600+0+0')
 GD.configure(bg = 'red')
