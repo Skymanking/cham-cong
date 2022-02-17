@@ -113,6 +113,37 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
 
 
 
+
+    baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
+    data_baocao = baocao_1.sheet_by_index(0)
+    mod_day_baocao = copy(baocao_1)
+    w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
+
+    # =========================== Mã hoá ca =====================
+    print("Ma hoa ca va OT")
+
+
+    for m in tqdm(range(data.nrows-3)):
+        if("Toi" in str(data.cell_value(m + 3, 5)) and data.cell_value(m + 4, 12) != "None" and data.cell_value(m + 3, 12) != "None" and data.cell_value(m + 4, 11) == "None" and ("Sang" in str(data.cell_value(m + 4, 5)))):
+            if("Cuoi tuan" in str(data.cell_value(m + 4, 5))):
+                w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
+                temp = data.cell_value(m + 4, 30)
+                w_sheet.write(m+4, 30, float(temp) + 2)
+                print(m)
+            else: 
+                if(float(data.cell_value(m + 3, 25)) >= 5):
+                    w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
+                    temp = data.cell_value(m + 4, 29)
+                    w_sheet.write(m+4, 29, float(temp) + 2)
+                    print(m)
+    wb.save('../cham-cong/convert/baocao.xlsx')
+
+
+    chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
+    data = chamcong.sheet_by_index(0)
+    wb = copy(chamcong)
+    w_sheet = wb.get_sheet(0)
+    
     # =========================== Duyệt OT =====================
     print("Duyet OT")
     for j in tqdm(range(data.nrows-3)):
@@ -132,15 +163,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             w_sheet.write(j+3, 35,"RR")
 
 
-
-
-    baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
-    data_baocao = baocao_1.sheet_by_index(0)
-    mod_day_baocao = copy(baocao_1)
-    w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
-
-    # =========================== Mã hoá ca =====================
-    print("Ma hoa ca va OT")
     for m in tqdm(range(data.nrows-3)):
 
         #Kiem tra ca
@@ -241,7 +263,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             curr_row.append(data.cell_value(row, col))
         all_rows_data.append(curr_row)
 
-    chamcong1 = xlsxwriter.Workbook("../cham-cong/convert/data.xlsx")
+    chamcong1 = xlsxwriter.Workbook("../cham-cong/convert/data1.xlsx")
     data1 = chamcong1.add_worksheet()
 
     for row in range(len(all_rows_data)):
@@ -260,13 +282,13 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-    baocao1 = xlsxwriter.Workbook('../cham-cong/convert/baocao1.xlsx')
-    data2 = baocao1.add_worksheet()
+    baocao2 = xlsxwriter.Workbook('../cham-cong/convert/baocao2.xlsx')
+    data2 = baocao2.add_worksheet()
 
     for row in range(len(all_rows_baocao)):
         for col in range(len(all_rows_baocao[0])):
             data2.write(row, col, all_rows_baocao[row][col])
-    baocao1.close()
+    baocao2.close()
 
 
     baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
