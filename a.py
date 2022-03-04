@@ -7,6 +7,8 @@ import openpyxl
 from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
+
+
 def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     def myround(x, base=0.5):
         return base * round(float(x) / base)
@@ -113,37 +115,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
 
 
 
-
-    baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
-    data_baocao = baocao_1.sheet_by_index(0)
-    mod_day_baocao = copy(baocao_1)
-    w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
-
-    # =========================== Mã hoá ca =====================
-    print("Ma hoa ca va OT")
-
-
-    for m in tqdm(range(data.nrows-3)):
-        if("Toi" in str(data.cell_value(m + 3, 5)) and data.cell_value(m + 4, 12) != "None" and data.cell_value(m + 3, 12) != "None" and data.cell_value(m + 4, 11) == "None" and ("Sang" in str(data.cell_value(m + 4, 5)))):
-            if("Cuoi tuan" in str(data.cell_value(m + 4, 5))):
-                w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
-                temp = data.cell_value(m + 4, 30)
-                w_sheet.write(m+4, 30, float(temp) + 2)
-
-            else: 
-                if(float(data.cell_value(m + 3, 25)) >= 5):
-                    w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
-                    temp = data.cell_value(m + 4, 29)
-                    w_sheet.write(m+4, 29, float(temp) + 2)
-
-    wb.save('../cham-cong/convert/baocao.xlsx')
-
-
-    chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
-    data = chamcong.sheet_by_index(0)
-    wb = copy(chamcong)
-    w_sheet = wb.get_sheet(0)
-    
     # =========================== Duyệt OT =====================
     print("Duyet OT")
     for j in tqdm(range(data.nrows-3)):
@@ -163,24 +134,51 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             w_sheet.write(j+3, 35,"RR")
 
 
+
+
+
+
+    # =========================== Mã hoá ca =====================
+    print("Ma hoa ca va OT")
+
+    for m in tqdm(range(data.nrows-3)):
+        if("Toi" in str(data.cell_value(m + 3, 5)) and data.cell_value(m + 4, 12) != "None" and data.cell_value(m + 3, 12) != "None" and data.cell_value(m + 4, 11) == "None" and ("Sang" in str(data.cell_value(m + 4, 5)))):
+            if("Cuoi tuan" in str(data.cell_value(m + 4, 5))):
+                w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
+                temp = data.cell_value(m + 4, 30)
+                w_sheet.write(m+4, 30, float(temp) + 2)
+            else: 
+                if(float(data.cell_value(m + 3, 25)) >= 5):
+                    w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
+                    temp = data.cell_value(m + 4, 29)
+                    w_sheet.write(m+4, 29, float(temp) + 2)
+
+    wb.save('../cham-cong/convert/baocao.xlsx')
+
+
+    baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
+    data = baocao_1.sheet_by_index(0)
+    mod_day_baocao = copy(baocao_1)
+    w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
+
     for m in tqdm(range(data.nrows-3)):
 
         #Kiem tra ca
         if(float(data.cell_value(m+3, 25))>=5):
-            if(data.cell_value(m+3, 5) == "San xuat Sang" or data.cell_value(m+3, 5) == "Bao tri Sang"):
+            if(data.cell_value(m+3, 5) == "San xuat Sang"):
                 w_sheet.write(m+3, 36, "A")
-            elif(data.cell_value(m+3, 5) == "San xuat Toi" or data.cell_value(m+3, 5) == "Bao tri Toi"):
+            elif(data.cell_value(m+3, 5) == "San xuat Toi"):
                 w_sheet.write(m+3, 36, "C")
-            elif(data.cell_value(m+3, 5) == "San xuat Ca C" or data.cell_value(m+3, 5) == "Bao tri Ca C"):
+            elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
                 w_sheet.write(m+3, 36, "B")
             elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
                 w_sheet.write(m+3, 36, "D")
         elif(float(data.cell_value(m+3, 25))<5 or float(data.cell_value(m+3, 25))>=3):
-            if(data.cell_value(m+3, 5) == "San xuat Sang" or data.cell_value(m+3, 5) == "Bao tri Sang"):
+            if(data.cell_value(m+3, 5) == "San xuat Sang"):
                 w_sheet.write(m+3, 36, "RR5")
-            elif(data.cell_value(m+3, 5) == "San xuat Toi" or data.cell_value(m+3, 5) == "Bao tri Toi"):
+            elif(data.cell_value(m+3, 5) == "San xuat Toi"):
                 w_sheet.write(m+3, 36, "RR5")
-            elif(data.cell_value(m+3, 5) == "San xuat Ca C" or data.cell_value(m+3, 5) == "Bao tri Ca C"):
+            elif(data.cell_value(m+3, 5) == "San xuat Ca C"):
                 w_sheet.write(m+3, 36, "RR5")
             elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
                 w_sheet.write(m+3, 36, "RR5")
@@ -206,7 +204,10 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                 w_sheet.write(m+3, 36, "")
  
     wb.save('../cham-cong/convert/baocao.xlsx')
-
+    baocao_5 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
+    data_baocao = baocao_5.sheet_by_index(0)
+    mod_day_baocao = copy(baocao_1)
+    w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
 
 
     # =========================== Chuyển dữ liệu sang report =============================================
@@ -263,7 +264,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             curr_row.append(data.cell_value(row, col))
         all_rows_data.append(curr_row)
 
-    chamcong1 = xlsxwriter.Workbook("../cham-cong/convert/data1.xlsx")
+    chamcong1 = xlsxwriter.Workbook("../cham-cong/convert/data.xlsx")
     data1 = chamcong1.add_worksheet()
 
     for row in range(len(all_rows_data)):
@@ -282,13 +283,13 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-    baocao2 = xlsxwriter.Workbook('../cham-cong/convert/baocao2.xlsx')
-    data2 = baocao2.add_worksheet()
+    baocao1 = xlsxwriter.Workbook('../cham-cong/convert/baocao1.xlsx')
+    data2 = baocao1.add_worksheet()
 
     for row in range(len(all_rows_baocao)):
         for col in range(len(all_rows_baocao[0])):
             data2.write(row, col, all_rows_baocao[row][col])
-    baocao2.close()
+    baocao1.close()
 
 
     baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
