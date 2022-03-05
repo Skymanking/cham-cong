@@ -171,7 +171,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                 w_sheet.write(m+3, 36, "A")
             elif(data.cell_value(m+3, 5) == "San xuat Toi" or data.cell_value(m+3, 5) == "Bao tri Toi"):
                 w_sheet.write(m+3, 36, "C")
-            elif(data.cell_value(m+3, 5) == "San xuat Ca C" or data.cell_value(m+3, 5) == "Bao tri Ca C"):
+            elif(data.cell_value(m+3, 5) == "Ca Gay" or data.cell_value(m+3, 5) == "Bao tri Ca C"):
                 w_sheet.write(m+3, 36, "B")
             elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
                 w_sheet.write(m+3, 36, "D")
@@ -180,7 +180,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                 w_sheet.write(m+3, 36, "RR5")
             elif(data.cell_value(m+3, 5) == "San xuat Toi" or data.cell_value(m+3, 5) == "Bao tri Toi"):
                 w_sheet.write(m+3, 36, "RR5")
-            elif(data.cell_value(m+3, 5) == "San xuat Ca C" or data.cell_value(m+3, 5) == "Bao tri Ca C"):
+            elif(data.cell_value(m+3, 5) == "Ca Gay" or data.cell_value(m+3, 5) == "Bao tri Ca C"):
                 w_sheet.write(m+3, 36, "RR5")
             elif(data.cell_value(m+3, 5) == "Ca Hanh Chính"):
                 w_sheet.write(m+3, 36, "RR5")
@@ -200,7 +200,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
 
         #Kiem tra chu nhat
         if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==6):
-            if(float(data.cell_value(m+3, 30)) > 1 ):
+            if(float(data.cell_value(m+3, 30)) > 1 and data.cell_value(m+3, 5) == ""):
                 w_sheet.write(m+3, 36, "CN")
             else:
                 w_sheet.write(m+3, 36, "")
