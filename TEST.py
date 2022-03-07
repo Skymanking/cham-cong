@@ -160,12 +160,12 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             w_sheet.write(ID+3, 34, OT3)
             w_sheet.write(ID+3, 35, xinLamThem)
 
-    wb.save('../cham-cong/convert/baocao.xlsx')
+    wb.save('../cham-cong/convert/datachuanbi.xlsx')
 
 
     # =========================== Get data =====================
     print("Get data va chuan bi bao cao")
-    chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
+    chamcong = xlrd.open_workbook('../cham-cong/convert/datachuanbi.xlsx')
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
@@ -299,8 +299,11 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
  
          #Kiem tra quen cham cong
         if (data.cell_value(m+3, 11) == "None" or data.cell_value(m+3, 12) == "None"):
-            w_sheet.write(m+3, 36, "RR")
- 
+            w_sheet.write(m+3, 36, "R0,D5")
+
+        if (data.cell_value(m+3, 11) == "None" and data.cell_value(m+3, 12) == "None"):
+            w_sheet.write(m+3, 36, "P0")
+
         #Kiem tra thu 7
         if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, 22) == "Gián Tiếp"):
             if(float(data.cell_value(m+3, 25))<5):
