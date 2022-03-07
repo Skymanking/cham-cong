@@ -52,10 +52,120 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             delete.write(row, col, "")
     delete_baocao.close()
 
+    print("Hop nhat ca trong ngay")
+    chamcong = xlrd.open_workbook(namedata)
+    data = chamcong.sheet_by_index(0)
+    wb = copy(chamcong)
+    w_sheet = wb.get_sheet(0)
+    for ID in range(data.nrows -3):
+        if(data.cell_value(ID+2, 0) == data.cell_value(ID+3, 0) and data.cell_value(ID+2, 3) == data.cell_value(ID+3, 3)):
+            if (data.cell_value(ID+2, 26) == '' and data.cell_value(ID+3, 26) != ''):
+                lateIn = float(data.cell_value(ID+3, 26))
+            elif data.cell_value(ID+2, 26) != '' and data.cell_value(ID+3, 26) == '':
+                lateIn = float(data.cell_value(ID+2, 26))
+            elif data.cell_value(ID+3, 26) == '' and data.cell_value(ID+3, 26) == '':
+                lateIn = 0
+            else: 
+                lateIn = float(data.cell_value(ID+2, 26)) + float(data.cell_value(ID+3, 26))
+
+            if (data.cell_value(ID+2, 27) == '' and data.cell_value(ID+3, 27) != ''):
+                earlyOut = float(data.cell_value(ID+3, 27))
+            elif data.cell_value(ID+2, 27) != '' and data.cell_value(ID+3, 27) == '':
+                earlyOut = float(data.cell_value(ID+2, 27))
+            elif data.cell_value(ID+3, 27) == '' and data.cell_value(ID+3, 27) == '':
+                earlyOut = 0
+            else: 
+                earlyOut = float(data.cell_value(ID+2, 27)) + float(data.cell_value(ID+3, 27))    
+
+            if (data.cell_value(ID+2, 28) == '' and data.cell_value(ID+3, 28) != ''):
+                absence = float(data.cell_value(ID+3, 28))
+            elif data.cell_value(ID+2, 28) != '' and data.cell_value(ID+3, 28) == '':
+                absence = float(data.cell_value(ID+2, 28))
+            elif data.cell_value(ID+3, 28) == '' and data.cell_value(ID+3, 28) == '':
+                absence = 0
+            else: 
+                absence = float(data.cell_value(ID+2, 28)) + float(data.cell_value(ID+3, 28))    
+
+            if (data.cell_value(ID+2, 29) == '' and data.cell_value(ID+3, 29) != ''):
+                normalOT = float(data.cell_value(ID+3, 29))
+            elif data.cell_value(ID+2, 29) != '' and data.cell_value(ID+3, 29) == '':
+                normalOT = float(data.cell_value(ID+2, 29))
+            elif data.cell_value(ID+3, 29) == '' and data.cell_value(ID+3, 29) == '':
+                normalOT = 0
+            else: 
+                normalOT = float(data.cell_value(ID+2, 29)) + float(data.cell_value(ID+3, 29))    
+
+            if (data.cell_value(ID+2, 30) == '' and data.cell_value(ID+3, 30) != ''):
+                weekendOT = float(data.cell_value(ID+3, 30))
+            elif data.cell_value(ID+2, 30) != '' and data.cell_value(ID+3, 30) == '':
+                weekendOT = float(data.cell_value(ID+2, 30))
+            elif data.cell_value(ID+3, 30) == '' and data.cell_value(ID+3, 30) == '':
+                weekendOT = 0
+            else: 
+                weekendOT = float(data.cell_value(ID+2, 30)) + float(data.cell_value(ID+3, 30))    
+
+            if (data.cell_value(ID+2, 31) == '' and data.cell_value(ID+3, 31) != ''):
+                holidayOT = float(data.cell_value(ID+3, 31))
+            elif data.cell_value(ID+2, 31) != '' and data.cell_value(ID+3, 31) == '':
+                holidayOT = float(data.cell_value(ID+2, 31))
+            elif data.cell_value(ID+3, 31) == '' and data.cell_value(ID+3, 31) == '':
+                holidayOT = 0
+            else: 
+                holidayOT = float(data.cell_value(ID+2, 31)) + float(data.cell_value(ID+3, 31))   
+
+            if (data.cell_value(ID+2, 32) == '' and data.cell_value(ID+3, 32) != ''):
+                OT1 = float(data.cell_value(ID+3, 32))
+            elif data.cell_value(ID+2, 32) != '' and data.cell_value(ID+3, 32) == '':
+                OT1 = float(data.cell_value(ID+2, 32))
+            elif data.cell_value(ID+3, 32) == '' and data.cell_value(ID+3, 32) == '':
+                OT1 = 0
+            else: 
+                OT1 = float(data.cell_value(ID+2, 32)) + float(data.cell_value(ID+3, 32))  
+
+            if (data.cell_value(ID+2, 33) == '' and data.cell_value(ID+3, 33) != ''):
+                OT2 = float(data.cell_value(ID+3, 33))
+            elif data.cell_value(ID+2, 33) != '' and data.cell_value(ID+3, 33) == '':
+                OT2 = float(data.cell_value(ID+2, 33))
+            elif data.cell_value(ID+3, 33) == '' and data.cell_value(ID+3, 33) == '':
+                OT2 = 0
+            else: 
+                OT2 = float(data.cell_value(ID+2, 33)) + float(data.cell_value(ID+3, 33))  
+
+            if (data.cell_value(ID+2, 34) == '' and data.cell_value(ID+3, 34) != ''):
+                OT3 = float(data.cell_value(ID+3, 34))
+            elif data.cell_value(ID+2, 34) != '' and data.cell_value(ID+3, 34) == '':
+                OT3 = float(data.cell_value(ID+2, 34))
+            elif data.cell_value(ID+3, 34) == '' and data.cell_value(ID+3, 34) == '':
+                OT3 = 0
+            else: 
+                OT3 = float(data.cell_value(ID+2, 34)) + float(data.cell_value(ID+3, 34))  
+
+            if (data.cell_value(ID+2, 35) == '' and data.cell_value(ID+3, 35) != ''):
+                xinLamThem = float(data.cell_value(ID+3, 35))
+            elif data.cell_value(ID+2, 35) != '' and data.cell_value(ID+3, 35) == '':
+                xinLamThem = float(data.cell_value(ID+2, 35))
+            elif data.cell_value(ID+3, 35) == '' and data.cell_value(ID+3, 35) == '':
+                OT3 = 0
+            else: 
+                xinLamThem = float(data.cell_value(ID+2, 35)) + float(data.cell_value(ID+3, 35))  
+
+            w_sheet.write(ID+3, 26, lateIn)
+            w_sheet.write(ID+3, 27, earlyOut)
+            w_sheet.write(ID+3, 28, absence)
+            w_sheet.write(ID+3, 29, normalOT)
+            w_sheet.write(ID+3, 30, weekendOT)
+            w_sheet.write(ID+3, 31, holidayOT)
+            w_sheet.write(ID+3, 32, OT1)
+            w_sheet.write(ID+3, 33, OT2)
+            w_sheet.write(ID+3, 34, OT3)
+            w_sheet.write(ID+3, 35, xinLamThem)
+
+    wb.save('../cham-cong/convert/baocao.xlsx')
+
 
     # =========================== Get data =====================
     print("Get data va chuan bi bao cao")
-    chamcong = xlrd.open_workbook(namedata)
+    chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)

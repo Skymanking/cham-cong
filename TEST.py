@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter.ttk import *
 import tkinter.ttk as cm
 from tkinter import filedialog
-from data import xuly
+from a import xuly
 from datetime import datetime
 dem = 0
 class Giaodien(Frame):
