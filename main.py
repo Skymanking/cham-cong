@@ -7,6 +7,7 @@ import openpyxl
 from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
+
 def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     def myround(x, base=0.5):
         return base * round(float(x) / base)
@@ -64,9 +65,9 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                 delete.write(row, col, "")
         delete_baocao.close()
     except: 
-     print("khong co file bao cao")
-    baocaonew = xlsxwriter.Workbook('../cham-cong/convert/baocao.xlsx')
-    baocaonew.close()
+        print("khong co file bao cao")
+        baocaonew = xlsxwriter.Workbook('../cham-cong/convert/baocao.xlsx')
+        baocaonew.close()
 
     print("Hop nhat ca trong ngay")
     chamcong = xlrd.open_workbook(namedata)
@@ -74,8 +75,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
     for ID in range(data.nrows -3):
-        if(data.cell_value(ID+2, 0) == data.cell_value(ID+3, 0) and data.cell_value(ID+2, 3) == data.cell_value(ID+3, 3)):
-            
+        if(data.cell_value(ID+2, 0) == data.cell_value(ID+3, 0) and data.cell_value(ID+2, 3) == data.cell_value(ID+3, 3)):            
             w_sheet.write(ID+3, 26, hopnhat(ID, 26))
             w_sheet.write(ID+3, 27, hopnhat(ID, 27))
             w_sheet.write(ID+3, 28, hopnhat(ID, 28))
@@ -88,7 +88,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             w_sheet.write(ID+3, 35, hopnhat(ID, 35))
 
     wb.save('../cham-cong/convert/Du lieu hop nhat.xlsx')
-
 
     # =========================== Get data =====================
     print("Get data va chuan bi bao cao")
@@ -138,7 +137,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             else:
                 continue
   
-
     for o in range(1,1):
         w_sheet_baocao.write(5, o+67, o)
 
@@ -148,9 +146,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     mod_baocao = copy(baocao)
     w_sheet_baocao = mod_baocao.get_sheet(0)
 
-
-
-
     baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data_baocao = baocao_1.sheet_by_index(0)
     mod_day_baocao = copy(baocao_1)
@@ -158,7 +153,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
 
     # =========================== Mã hoá ca =====================
     print("Ma hoa ca va OT")
-
 
     for m in tqdm(range(data.nrows-3)):
         if("Toi" in str(data.cell_value(m + 3, 5)) and data.cell_value(m + 4, 12) != "None" and data.cell_value(m + 3, 12) != "None" and data.cell_value(m + 4, 11) == "None" and ("Sang" in str(data.cell_value(m + 4, 5)))):
@@ -174,7 +168,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                     w_sheet.write(m+4, 29, float(temp) + 2)
 
     wb.save('../cham-cong/convert/baocao.xlsx')
-
 
     chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data = chamcong.sheet_by_index(0)
@@ -198,7 +191,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
         otTime = (float( data.cell_value(j+3, 29)) + float( data.cell_value(j+3, 30)) + float( data.cell_value(j+3, 31)))
         if ((otTime) <= (otTime + float( data.cell_value(j+3, 32)) - 2)):
             w_sheet.write(j+3, 35,"RR")
-
 
     for m in tqdm(range(data.nrows-3)):
 
@@ -246,8 +238,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                 w_sheet.write(m+3, 36, "")
  
     wb.save('../cham-cong/convert/baocao.xlsx')
-
-
 
     # =========================== Chuyển dữ liệu sang report =============================================
     chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
@@ -352,7 +342,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     sh_data_convert.cell(6, 4).value = text_thang*1
     sh_data_convert.cell(6, 6).value = text_nam*1
 
-
     for row in tqdm(range(1, len(all_rows_baocao)+1)):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
@@ -392,7 +381,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     sh_data_convert = data_convert[sheet_name_data_convert]
     sh_data_convert.cell(6, 4).value = text_thang*1
     sh_data_convert.cell(6, 6).value = text_nam*1
-
 
     for row in tqdm(range(1, len(all_rows_baocao)+1)):
         for col in range(1, len(all_rows_baocao[0])+1):

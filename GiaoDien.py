@@ -6,6 +6,7 @@ from tkinter import filedialog
 from Main import xuly
 from datetime import datetime
 dem = 0
+day_now = datetime.today()
 class Giaodien(Frame):
 
     def Clear(self):
@@ -47,7 +48,7 @@ class Giaodien(Frame):
         self.Company = cm.Label(self, text = "HPT", font = ("Time New Roman", 30))
 
         self.Title = cm.Label(self, text = "BẢNG CHẤM CÔNG", font = ("Time New Roman", 24))
-        self.Month = cm.Label(self, text = "THÁNG: ", font = ("Time New Roman", 24))
+        self.Month = cm.Label(self, text = "THÁNG: " + str(day_now.month - 1), font = ("Time New Roman", 24))
 
         self.month_title = cm.Label(self, text = "Tháng", font = ("Time New Roman", 12))
         self.valuemonth = cm.Combobox(self, textvariable= GD.text_thang) 
