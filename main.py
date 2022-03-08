@@ -10,6 +10,18 @@ from datetime import date, datetime
 def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     def myround(x, base=0.5):
         return base * round(float(x) / base)
+
+    def hopnhat(ID, cow):
+            if (data.cell_value(ID+2, cow) == '' and data.cell_value(ID+3, cow) != ''):
+                value_cow = float(data.cell_value(ID+3, cow))
+            elif data.cell_value(ID+2, cow) != '' and data.cell_value(ID+3, cow) == '':
+                value_cow = float(data.cell_value(ID+2, cow))
+            elif data.cell_value(ID+3, cow) == '' and data.cell_value(ID+3, cow) == '':
+                value_cow = 0
+            else: 
+                value_cow = float(data.cell_value(ID+2, cow)) + float(data.cell_value(ID+3, cow))
+            return value_cow
+    
     # =========================== convert OT =====================
     print("Chuan bi du lieu")
     dataOT = xlrd.open_workbook(nameOT)
@@ -33,24 +45,28 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     ot_convert.close()
 
     # =========================== Xoá data =====================
+    try: 
+        baocao_del = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
+        data_baocao_del = baocao_del.sheet_by_index(0)
 
-    baocao_del = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
-    data_baocao_del = baocao_del.sheet_by_index(0)
+        all_rows_baocao_del = []
+        for row in tqdm(range(data_baocao_del.nrows)):
+            curr_row = []
+            for col in range(data_baocao_del.ncols):
+                curr_row.append(data_baocao_del.cell_value(row, col))
+            all_rows_baocao_del.append(curr_row)
 
-    all_rows_baocao_del = []
-    for row in tqdm(range(data_baocao_del.nrows)):
-        curr_row = []
-        for col in range(data_baocao_del.ncols):
-            curr_row.append(data_baocao_del.cell_value(row, col))
-        all_rows_baocao_del.append(curr_row)
+        delete_baocao = xlsxwriter.Workbook('../cham-cong/convert/baocao.xlsx')
+        delete = delete_baocao.add_worksheet()
 
-    delete_baocao = xlsxwriter.Workbook('../cham-cong/convert/baocao.xlsx')
-    delete = delete_baocao.add_worksheet()
-
-    for row in range(len(all_rows_baocao_del)):
-        for col in range(len(all_rows_baocao_del[0])):
-            delete.write(row, col, "")
-    delete_baocao.close()
+        for row in range(len(all_rows_baocao_del)):
+            for col in range(len(all_rows_baocao_del[0])):
+                delete.write(row, col, "")
+        delete_baocao.close()
+    except: 
+     print("khong co file bao cao")
+    baocaonew = xlsxwriter.Workbook('../cham-cong/convert/baocao.xlsx')
+    baocaonew.close()
 
     print("Hop nhat ca trong ngay")
     chamcong = xlrd.open_workbook(namedata)
@@ -59,113 +75,24 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     w_sheet = wb.get_sheet(0)
     for ID in range(data.nrows -3):
         if(data.cell_value(ID+2, 0) == data.cell_value(ID+3, 0) and data.cell_value(ID+2, 3) == data.cell_value(ID+3, 3)):
-            if (data.cell_value(ID+2, 26) == '' and data.cell_value(ID+3, 26) != ''):
-                lateIn = float(data.cell_value(ID+3, 26))
-            elif data.cell_value(ID+2, 26) != '' and data.cell_value(ID+3, 26) == '':
-                lateIn = float(data.cell_value(ID+2, 26))
-            elif data.cell_value(ID+3, 26) == '' and data.cell_value(ID+3, 26) == '':
-                lateIn = 0
-            else: 
-                lateIn = float(data.cell_value(ID+2, 26)) + float(data.cell_value(ID+3, 26))
+            
+            w_sheet.write(ID+3, 26, hopnhat(ID, 26))
+            w_sheet.write(ID+3, 27, hopnhat(ID, 27))
+            w_sheet.write(ID+3, 28, hopnhat(ID, 28))
+            w_sheet.write(ID+3, 29, hopnhat(ID, 29))
+            w_sheet.write(ID+3, 30, hopnhat(ID, 30))
+            w_sheet.write(ID+3, 31, hopnhat(ID, 31))
+            w_sheet.write(ID+3, 32, hopnhat(ID, 32))
+            w_sheet.write(ID+3, 33, hopnhat(ID, 33))
+            w_sheet.write(ID+3, 34, hopnhat(ID, 34))
+            w_sheet.write(ID+3, 35, hopnhat(ID, 35))
 
-            if (data.cell_value(ID+2, 27) == '' and data.cell_value(ID+3, 27) != ''):
-                earlyOut = float(data.cell_value(ID+3, 27))
-            elif data.cell_value(ID+2, 27) != '' and data.cell_value(ID+3, 27) == '':
-                earlyOut = float(data.cell_value(ID+2, 27))
-            elif data.cell_value(ID+3, 27) == '' and data.cell_value(ID+3, 27) == '':
-                earlyOut = 0
-            else: 
-                earlyOut = float(data.cell_value(ID+2, 27)) + float(data.cell_value(ID+3, 27))    
-
-            if (data.cell_value(ID+2, 28) == '' and data.cell_value(ID+3, 28) != ''):
-                absence = float(data.cell_value(ID+3, 28))
-            elif data.cell_value(ID+2, 28) != '' and data.cell_value(ID+3, 28) == '':
-                absence = float(data.cell_value(ID+2, 28))
-            elif data.cell_value(ID+3, 28) == '' and data.cell_value(ID+3, 28) == '':
-                absence = 0
-            else: 
-                absence = float(data.cell_value(ID+2, 28)) + float(data.cell_value(ID+3, 28))    
-
-            if (data.cell_value(ID+2, 29) == '' and data.cell_value(ID+3, 29) != ''):
-                normalOT = float(data.cell_value(ID+3, 29))
-            elif data.cell_value(ID+2, 29) != '' and data.cell_value(ID+3, 29) == '':
-                normalOT = float(data.cell_value(ID+2, 29))
-            elif data.cell_value(ID+3, 29) == '' and data.cell_value(ID+3, 29) == '':
-                normalOT = 0
-            else: 
-                normalOT = float(data.cell_value(ID+2, 29)) + float(data.cell_value(ID+3, 29))    
-
-            if (data.cell_value(ID+2, 30) == '' and data.cell_value(ID+3, 30) != ''):
-                weekendOT = float(data.cell_value(ID+3, 30))
-            elif data.cell_value(ID+2, 30) != '' and data.cell_value(ID+3, 30) == '':
-                weekendOT = float(data.cell_value(ID+2, 30))
-            elif data.cell_value(ID+3, 30) == '' and data.cell_value(ID+3, 30) == '':
-                weekendOT = 0
-            else: 
-                weekendOT = float(data.cell_value(ID+2, 30)) + float(data.cell_value(ID+3, 30))    
-
-            if (data.cell_value(ID+2, 31) == '' and data.cell_value(ID+3, 31) != ''):
-                holidayOT = float(data.cell_value(ID+3, 31))
-            elif data.cell_value(ID+2, 31) != '' and data.cell_value(ID+3, 31) == '':
-                holidayOT = float(data.cell_value(ID+2, 31))
-            elif data.cell_value(ID+3, 31) == '' and data.cell_value(ID+3, 31) == '':
-                holidayOT = 0
-            else: 
-                holidayOT = float(data.cell_value(ID+2, 31)) + float(data.cell_value(ID+3, 31))   
-
-            if (data.cell_value(ID+2, 32) == '' and data.cell_value(ID+3, 32) != ''):
-                OT1 = float(data.cell_value(ID+3, 32))
-            elif data.cell_value(ID+2, 32) != '' and data.cell_value(ID+3, 32) == '':
-                OT1 = float(data.cell_value(ID+2, 32))
-            elif data.cell_value(ID+3, 32) == '' and data.cell_value(ID+3, 32) == '':
-                OT1 = 0
-            else: 
-                OT1 = float(data.cell_value(ID+2, 32)) + float(data.cell_value(ID+3, 32))  
-
-            if (data.cell_value(ID+2, 33) == '' and data.cell_value(ID+3, 33) != ''):
-                OT2 = float(data.cell_value(ID+3, 33))
-            elif data.cell_value(ID+2, 33) != '' and data.cell_value(ID+3, 33) == '':
-                OT2 = float(data.cell_value(ID+2, 33))
-            elif data.cell_value(ID+3, 33) == '' and data.cell_value(ID+3, 33) == '':
-                OT2 = 0
-            else: 
-                OT2 = float(data.cell_value(ID+2, 33)) + float(data.cell_value(ID+3, 33))  
-
-            if (data.cell_value(ID+2, 34) == '' and data.cell_value(ID+3, 34) != ''):
-                OT3 = float(data.cell_value(ID+3, 34))
-            elif data.cell_value(ID+2, 34) != '' and data.cell_value(ID+3, 34) == '':
-                OT3 = float(data.cell_value(ID+2, 34))
-            elif data.cell_value(ID+3, 34) == '' and data.cell_value(ID+3, 34) == '':
-                OT3 = 0
-            else: 
-                OT3 = float(data.cell_value(ID+2, 34)) + float(data.cell_value(ID+3, 34))  
-
-            if (data.cell_value(ID+2, 35) == '' and data.cell_value(ID+3, 35) != ''):
-                xinLamThem = float(data.cell_value(ID+3, 35))
-            elif data.cell_value(ID+2, 35) != '' and data.cell_value(ID+3, 35) == '':
-                xinLamThem = float(data.cell_value(ID+2, 35))
-            elif data.cell_value(ID+3, 35) == '' and data.cell_value(ID+3, 35) == '':
-                OT3 = 0
-            else: 
-                xinLamThem = float(data.cell_value(ID+2, 35)) + float(data.cell_value(ID+3, 35))  
-
-            w_sheet.write(ID+3, 26, lateIn)
-            w_sheet.write(ID+3, 27, earlyOut)
-            w_sheet.write(ID+3, 28, absence)
-            w_sheet.write(ID+3, 29, normalOT)
-            w_sheet.write(ID+3, 30, weekendOT)
-            w_sheet.write(ID+3, 31, holidayOT)
-            w_sheet.write(ID+3, 32, OT1)
-            w_sheet.write(ID+3, 33, OT2)
-            w_sheet.write(ID+3, 34, OT3)
-            w_sheet.write(ID+3, 35, xinLamThem)
-
-    wb.save('../cham-cong/convert/datachuanbi.xlsx')
+    wb.save('../cham-cong/convert/Du lieu hop nhat.xlsx')
 
 
     # =========================== Get data =====================
     print("Get data va chuan bi bao cao")
-    chamcong = xlrd.open_workbook('../cham-cong/convert/datachuanbi.xlsx')
+    chamcong = xlrd.open_workbook('../cham-cong/convert/Du lieu hop nhat.xlsx')
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
@@ -364,7 +291,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                         if data.cell_value(j+3, 11) == "None" and data.cell_value(j+3, 12) == "None" and data.cell_value(j+3, 5) == "":
                             w_sheet_baocao.write(i+7,  k+6, "")
                     
-    mod_baocao.save('../cham-cong/convert/baocaovipham.xlsx')
+    mod_baocao.save('../cham-cong/convert/Bao cao vi pham.xlsx')
 
     # =========================== xử lý file mở k được =====================
     print("Report")
@@ -376,7 +303,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             curr_row.append(data.cell_value(row, col))
         all_rows_data.append(curr_row)
 
-    chamcong1 = xlsxwriter.Workbook("../cham-cong/convert/data1.xlsx")
+    chamcong1 = xlsxwriter.Workbook("../cham-cong/convert/data_thang"+text_thang+".xlsx")
     data1 = chamcong1.add_worksheet()
 
     for row in range(len(all_rows_data)):
@@ -395,7 +322,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-    baocao2 = xlsxwriter.Workbook('../cham-cong/convert/baocao2.xlsx')
+    baocao2 = xlsxwriter.Workbook('../cham-cong/convert/Cong_thang_'+text_thang+'.xlsx')
     data2 = baocao2.add_worksheet()
 
     for row in range(len(all_rows_baocao)):
@@ -429,11 +356,11 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     for row in tqdm(range(1, len(all_rows_baocao)+1)):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
-    data_convert.save("../cham-cong/report/chamcong"+"_thang"+text_thang+"_nam"+text_nam +".xlsx")
+    data_convert.save("../cham-cong/report/Bang cong thang "+text_thang+" nam "+text_nam +".xlsx")
 
     # BAO CAO Vi PHAM
     
-    baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocaovipham.xlsx')
+    baocao_1 = xlrd.open_workbook('../cham-cong/convert/Bao cao vi pham.xlsx')
     data_baocao = baocao_1.sheet_by_index(0)
 
     all_rows_baocao = []
@@ -443,7 +370,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             curr_row.append(data_baocao.cell_value(row, col))
         all_rows_baocao.append(curr_row)
 
-    baocao1 = xlsxwriter.Workbook("../cham-cong/convert/baocaovipham.xlsx")
+    baocao1 = xlsxwriter.Workbook("../cham-cong/convert/Bao cao vi pham.xlsx")
     data2 = baocao1.add_worksheet()
 
     for row in range(len(all_rows_baocao)):
@@ -470,6 +397,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     for row in tqdm(range(1, len(all_rows_baocao)+1)):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
-    data_convert.save("../cham-cong/report/baocao_vipham"+"_thang"+text_thang+"_nam"+text_nam + ".xlsx")
+    data_convert.save("../cham-cong/report/Bao cao vi pham thang "+text_thang+" nam "+text_nam + ".xlsx")
     print("done")              
     
