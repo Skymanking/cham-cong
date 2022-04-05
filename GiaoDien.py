@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter.ttk import *
 import tkinter.ttk as cm
 from tkinter import filedialog
-from Main import xuly
+from test import xuly
 from datetime import datetime
 dem = 0
 day_now = datetime.today()
