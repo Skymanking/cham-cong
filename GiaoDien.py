@@ -102,7 +102,7 @@ class Giaodien(Frame):
         self.data_nhanvien.place(height = 40, width = 400, x =10 , y = 370)
         self.button_nhanvien.place(height = 25, width = 70, x = 10, y = 405)
         self.data_nhanvien_link.place(height = 40, width = 700, x =170 , y = 370)
-
+ 
         self.thongbao.place(height = 60, width = 700, x =250 , y = 450)
 
         self.countdown.place(height = 60, width = 700, x =250 , y = 500)

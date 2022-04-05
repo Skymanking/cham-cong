@@ -74,7 +74,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
-    for ID in range(data.nrows -3):
+    for ID in tqdm(range(data.nrows -3)):
         if(data.cell_value(ID+2, 0) == data.cell_value(ID+3, 0) and data.cell_value(ID+2, 3) == data.cell_value(ID+3, 3)):            
             w_sheet.write(ID+3, 26, hopnhat(ID, 26))
             w_sheet.write(ID+3, 27, hopnhat(ID, 27))
@@ -155,17 +155,17 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     print("Ma hoa ca va OT")
 
     for m in tqdm(range(data.nrows-3)):
-        if("Toi" in str(data.cell_value(m + 3, 5)) and data.cell_value(m + 4, 12) != "None" and data.cell_value(m + 3, 12) != "None" and data.cell_value(m + 4, 11) == "None" and ("Sang" in str(data.cell_value(m + 4, 5)))):
-            if("Cuoi tuan" in str(data.cell_value(m + 4, 5))):
+        if("Tối" in str(data.cell_value(m + 3, 5)) and data.cell_value(m + 4, 12) != "None" and data.cell_value(m + 3, 12) != "None" and data.cell_value(m + 4, 11) == "None" and ("Sáng" in str(data.cell_value(m + 4, 5)))):
+            if("Cuối tuần" in str(data.cell_value(m + 4, 5))):
                 w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
                 temp = data.cell_value(m + 4, 30)
-                w_sheet.write(m+4, 30, float(temp) + 2)
+                w_sheet.write(m+4, 30, float(temp) + 4)
 
             else: 
                 if(float(data.cell_value(m + 3, 25)) >= 5):
                     w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
                     temp = data.cell_value(m + 4, 29)
-                    w_sheet.write(m+4, 29, float(temp) + 2)
+                    w_sheet.write(m+4, 29, float(temp) + 4)
 
     wb.save('../cham-cong/convert/baocao.xlsx')
 
