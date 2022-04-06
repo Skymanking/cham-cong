@@ -197,7 +197,15 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                         w_sheet.write(j+3, 35,"")
                     else:
                         w_sheet.write(j+3, 35, myround(float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31))))
-    
+    # OT1 = TotalOT - NormalOT (max =4)
+
+    # XinOT > (OT1, WOT, HOT) => OT = OT1 (Báo lỗi)
+
+    # XinOT < (OT1, WOT, HOT) => OT = XinOT (Báo warning)
+
+
+
+
     # for j in tqdm(range(data.nrows-3)):
     #     otTime = (float( data.cell_value(j+3, 29)) + float( data.cell_value(j+3, 30)) + float( data.cell_value(j+3, 31)))
     #     if ((otTime) <= (otTime + float( data.cell_value(j+3, 32)) - 2)):
@@ -253,6 +261,11 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     wb.save('../cham-cong/convert/baocao.xlsx')
 
     # =========================== Chuyển dữ liệu sang report =============================================
+
+    # Thêm 1 sheet giờ vào giờ ra
+
+
+
     chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
