@@ -153,9 +153,11 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
 
     # =========================== Mã hoá ca =====================
     print("Ma hoa ca va OT")
-
+    print(data.nrows)
     for m in tqdm(range(data.nrows-3)):
+        print(m)
         if("Tối" in str(data.cell_value(m + 3, 5)) and data.cell_value(m + 4, 12) != "None" and data.cell_value(m + 3, 12) != "None" and data.cell_value(m + 4, 11) == "None" and ("Sáng" in str(data.cell_value(m + 4, 5)))):
+            print(m)
             if("Cuối tuần" in str(data.cell_value(m + 4, 5))):
                 w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
                 temp = data.cell_value(m + 4, 30)
