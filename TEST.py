@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from pandas import isnull
 import xlwt
 import xlrd
@@ -187,7 +188,13 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
             else: 
                 w_sheet.write(m+3, khaibao.MaHoaCa, "P5,D5")
         else:
-            if(float(data.cell_value(m+3, khaibao.Nghiphepngay))>0):
+            x = 0.0
+            if data.cell_value(m+3, khaibao.TotalHours) != "" and float(data.cell_value(m+3, khaibao.Nghiphepngay)) >= 10:
+                h, mi = data.cell_value(m+3, khaibao.TotalHours).split(":")
+                x = myround(float(h) + float(mi)/60)
+            if(float(data.cell_value(m+3, khaibao.Nghiphepngay)) <= x) and float(data.cell_value(m+3, khaibao.Nghiphepngay)) >= 10:
+                w_sheet.write(m+3, khaibao.MaHoaCa, "Co don nhung di lam")
+            elif(float(data.cell_value(m+3, khaibao.Nghiphepngay))>0):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "P")
             else: 
                 w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
@@ -225,18 +232,20 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
             elif((float(data.cell_value(m+3, khaibao.OT1))<float(data.cell_value(m+3, khaibao.Xinlamthem)))):
                 w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.OT1))))      
         #Kiem tra ngay le
-        for hol in liHoliday: 
-            x = 0.0
-            if(int(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").day)== int(hol)):
-                w_sheet.write(m+3, khaibao.MaHoaCa, "L")
-                if data.cell_value(m+3, khaibao.WorkedHours) != "":
-                    h, mi = data.cell_value(m+3, khaibao.WorkedHours).split(":")
-                    x = myround(float(h) + float(mi)/60)
-                if(float(data.cell_value(m+3, khaibao.Xinlamthem))>=x):
-                    w_sheet.write(m+3, khaibao.TongOT, x)
-                elif((float(data.cell_value(m+3, khaibao.Xinlamthem)))<x):
-                    w_sheet.write(m+3, khaibao.TongOT,myround(float( data.cell_value(m+3, khaibao.Xinlamthem)))) 
-        #Kiem tra nghi phep
+        if (holiday == ""):
+            continue
+        else:
+            for hol in liHoliday: 
+                x = 0.0
+                if(int(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").day)== int(hol)):
+                    w_sheet.write(m+3, khaibao.MaHoaCa, "L")
+                    if data.cell_value(m+3, khaibao.WorkedHours) != "":
+                        h, mi = data.cell_value(m+3, khaibao.WorkedHours).split(":")
+                        x = myround(float(h) + float(mi)/60)
+                    if(float(data.cell_value(m+3, khaibao.Xinlamthem))>=x):
+                        w_sheet.write(m+3, khaibao.TongOT, x)
+                    elif((float(data.cell_value(m+3, khaibao.Xinlamthem)))<x):
+                        w_sheet.write(m+3, khaibao.TongOT,myround(float( data.cell_value(m+3, khaibao.Xinlamthem)))) 
  
     wb.save('../cham-cong/convert/baocao.xlsx')
 
@@ -286,8 +295,12 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                             kl = data.cell_value(j+3, khaibao.EarlyOut)
                             w_sheet_baocao.write(i+7,  k+7, kl)
                         if data.cell_value(j+3, khaibao.Giovao) == "None" and data.cell_value(j+3, khaibao.Giora) == "None":
-                            w_sheet_baocao.write(i+7,  k+6, "Nghi")
-                            w_sheet_baocao.write(i+7,  k+7, "")
+                            if(float(data.cell_value(m+3, khaibao.Nghiphepngay))==12):
+                                w_sheet_baocao.write(i+7,  k+6, "")
+                                w_sheet_baocao.write(i+7,  k+7, "")
+                            else:
+                                w_sheet_baocao.write(i+7,  k+6, "Nghi")
+                                w_sheet_baocao.write(i+7,  k+7, "")
                         if data.cell_value(j+3, khaibao.Giovao) == "None" and data.cell_value(j+3, khaibao.Giora) == "None" and data.cell_value(j+3, khaibao.Ca) == "":
                             w_sheet_baocao.write(i+7,  k+6, "")
                     

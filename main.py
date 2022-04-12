@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from pandas import isnull
 import xlwt
 import xlrd
@@ -225,18 +226,20 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
             elif((float(data.cell_value(m+3, khaibao.OT1))<float(data.cell_value(m+3, khaibao.Xinlamthem)))):
                 w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.OT1))))      
         #Kiem tra ngay le
-        for hol in liHoliday: 
-            x = 0.0
-            if(int(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").day)== int(hol)):
-                w_sheet.write(m+3, khaibao.MaHoaCa, "L")
-                if data.cell_value(m+3, khaibao.WorkedHours) != "":
-                    h, mi = data.cell_value(m+3, khaibao.WorkedHours).split(":")
-                    x = myround(float(h) + float(mi)/60)
-                if(float(data.cell_value(m+3, khaibao.Xinlamthem))>=x):
-                    w_sheet.write(m+3, khaibao.TongOT, x)
-                elif((float(data.cell_value(m+3, khaibao.Xinlamthem)))<x):
-                    w_sheet.write(m+3, khaibao.TongOT,myround(float( data.cell_value(m+3, khaibao.Xinlamthem)))) 
-        #Kiem tra nghi phep
+        if (holiday == ""):
+            continue
+        else:
+            for hol in liHoliday: 
+                x = 0.0
+                if(int(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").day)== int(hol)):
+                    w_sheet.write(m+3, khaibao.MaHoaCa, "L")
+                    if data.cell_value(m+3, khaibao.WorkedHours) != "":
+                        h, mi = data.cell_value(m+3, khaibao.WorkedHours).split(":")
+                        x = myround(float(h) + float(mi)/60)
+                    if(float(data.cell_value(m+3, khaibao.Xinlamthem))>=x):
+                        w_sheet.write(m+3, khaibao.TongOT, x)
+                    elif((float(data.cell_value(m+3, khaibao.Xinlamthem)))<x):
+                        w_sheet.write(m+3, khaibao.TongOT,myround(float( data.cell_value(m+3, khaibao.Xinlamthem)))) 
  
     wb.save('../cham-cong/convert/baocao.xlsx')
 
