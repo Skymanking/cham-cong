@@ -1,3 +1,4 @@
+from pandas import isnull
 import xlwt
 import xlrd
 import khaibao
@@ -9,7 +10,12 @@ from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
 
-def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
+def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
+    if (holiday == ""):
+        print("Holiday is emtry")
+    else:
+        strHoliday = holiday.replace(" ", "")
+        liHoliday = list(strHoliday.split(","))
     def myround(x, base=1):
         return base * round(float(x) / base)
 
@@ -164,19 +170,19 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     w_sheet = wb.get_sheet(0)
     
     # =========================== Duyệt OT =====================
-    print("OT")
-    for j in tqdm(range(data.nrows-3)):
-        if(float(data.cell_value(j+3, khaibao.OT1))<=1):
-            if(float(data.cell_value(j+3, khaibao.WeekendOT))+ float(data.cell_value(j+3, khaibao.HolidayOT))> float(data.cell_value(j+3, khaibao.Xinlamthem))):
-                w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.Xinlamthem))))
-            else:
-                w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.WeekendOT))+float( data.cell_value(j+3, khaibao.HolidayOT))))
-        else:
-            if((float(data.cell_value(j+3, khaibao.OT1))>=float(data.cell_value(j+3, khaibao.Xinlamthem)))):
-                w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.Xinlamthem))))
-            # XinOT > (OT1, WOT, HOT) => OT = OT1 (Báo lỗi)
-            elif((float(data.cell_value(j+3, khaibao.OT1))<float(data.cell_value(j+3, khaibao.Xinlamthem)))):
-                w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.OT1))))           
+    # print("OT")
+    # for j in tqdm(range(data.nrows-3)):
+    #     if(float(data.cell_value(j+3, khaibao.OT1))<=1):
+    #         if(float(data.cell_value(j+3, khaibao.WeekendOT))+ float(data.cell_value(j+3, khaibao.HolidayOT))> float(data.cell_value(j+3, khaibao.Xinlamthem))):
+    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.Xinlamthem))))
+    #         else:
+    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.WeekendOT))+float( data.cell_value(j+3, khaibao.HolidayOT))))
+    #     else:
+    #         if((float(data.cell_value(j+3, khaibao.OT1))>=float(data.cell_value(j+3, khaibao.Xinlamthem)))):
+    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.Xinlamthem))))
+    #         # XinOT > (OT1, WOT, HOT) => OT = OT1 (Báo lỗi)
+    #         elif((float(data.cell_value(j+3, khaibao.OT1))<float(data.cell_value(j+3, khaibao.Xinlamthem)))):
+    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.OT1))))           
     print("Ma hoa ca va OT")
     for m in tqdm(range(data.nrows-3)):
         #Kiem tra ca
@@ -221,6 +227,30 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "CN")
             else:
                 w_sheet.write(m+3, khaibao.MaHoaCa, "")
+        # =========================== Duyệt OT =====================
+        if(float(data.cell_value(m+3, khaibao.OT1))<=1):
+            if(float(data.cell_value(m+3, khaibao.WeekendOT))+ float(data.cell_value(m+3, khaibao.HolidayOT))> float(data.cell_value(m+3, khaibao.Xinlamthem))):
+                w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.Xinlamthem))))
+            else:
+                w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.WeekendOT))+float( data.cell_value(m+3, khaibao.HolidayOT))))
+        else:
+            if((float(data.cell_value(m+3, khaibao.OT1))>=float(data.cell_value(m+3, khaibao.Xinlamthem)))):
+                w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.Xinlamthem))))
+            # XinOT > (OT1, WOT, HOT) => OT = OT1 (Báo lỗi)
+            elif((float(data.cell_value(m+3, khaibao.OT1))<float(data.cell_value(m+3, khaibao.Xinlamthem)))):
+                w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.OT1))))      
+        #Kiem tra ngay le
+        for hol in liHoliday:
+            x = 0.0
+            if(int(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").day)== int(hol)):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "L")
+                if data.cell_value(m+3, khaibao.WorkedHours) != "":
+                    h, mi = data.cell_value(m+3, khaibao.WorkedHours).split(":")
+                    x = myround(float(h) + float(mi)/60)
+                if(float(data.cell_value(m+3, khaibao.Xinlamthem))>=x):
+                    w_sheet.write(m+3, khaibao.TongOT, x)
+                elif((float(data.cell_value(m+3, khaibao.Xinlamthem)))<x):
+                    w_sheet.write(m+3, khaibao.TongOT,myround(float( data.cell_value(m+3, khaibao.Xinlamthem)))) 
  
     wb.save('../cham-cong/convert/baocao.xlsx')
 

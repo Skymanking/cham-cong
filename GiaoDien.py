@@ -1,3 +1,4 @@
+from queue import Empty
 import tkinter.scrolledtext as sc
 from tkinter import *
 from tkinter.ttk import *
@@ -38,13 +39,14 @@ class Giaodien(Frame):
             self.countdown['text'] = "Thoi gian: " + str(dem)
             GD.after(1000, timerun)
         timerun()
-        xuly(GD.filename_data, GD.filename_OT, GD.filename_nhanvien, GD.text_nam.get(), GD.text_thang.get())
+        xuly(GD.filename_data, GD.filename_OT, GD.filename_nhanvien, GD.text_nam.get(), GD.text_thang.get(), self.holiday_link.get())
         self.thongbao['text'] = "XONG "
     
     def __init__(self, master):
         super().__init__(master)
         GD.text_thang = StringVar()
         GD.text_nam = StringVar()
+        GD.Holiday = StringVar()
         self.Company = cm.Label(self, text = "HPT", font = ("Time New Roman", 30))
 
         self.Title = cm.Label(self, text = "BẢNG CHẤM CÔNG", font = ("Time New Roman", 24))
@@ -69,6 +71,9 @@ class Giaodien(Frame):
         self.data_nhanvien = cm.Label(self, text = "Chọn file Nhân Viên:", font = ("Time New Roman", 12))
         self.data_nhanvien_link = cm.Label(self, text = "", font = ("Time New Roman", 12))
         self.button_nhanvien=cm.Button(self, text = "Chọn file", command = self.Open_nhanvien)
+
+        self.holiday = cm.Label(self, text = "Ngày lễ: (phân biệt bởi dấu ',')", font = ("Time New Roman", 12))
+        self.holiday_link = Entry(GD, width= 500)
 
         self.thongbao = cm.Label(self, text = "", font = ("Time New Roman", 36))
 
@@ -102,6 +107,9 @@ class Giaodien(Frame):
         self.data_nhanvien.place(height = 40, width = 400, x =10 , y = 370)
         self.button_nhanvien.place(height = 25, width = 70, x = 10, y = 405)
         self.data_nhanvien_link.place(height = 40, width = 700, x =170 , y = 370)
+
+        self.holiday.place(height = 40, width = 400, x =10 , y = 435)
+        self.holiday_link.place(height = 30, width = 500, x =10 , y = 465)
  
         self.thongbao.place(height = 60, width = 700, x =250 , y = 450)
 

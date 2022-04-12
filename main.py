@@ -1,5 +1,7 @@
+from pandas import isnull
 import xlwt
 import xlrd
+import khaibao
 from xlutils.copy import copy
 import xlsxwriter
 import collections
@@ -8,8 +10,13 @@ from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
 
-def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
-    def myround(x, base=0.5):
+def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
+    if (holiday == ""):
+        print("Holiday is emtry")
+    else:
+        strHoliday = holiday.replace(" ", "")
+        liHoliday = list(strHoliday.split(","))
+    def myround(x, base=1):
         return base * round(float(x) / base)
 
     def hopnhat(ID, cow):
@@ -23,29 +30,8 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
                 value_cow = float(data.cell_value(ID+2, cow)) + float(data.cell_value(ID+3, cow))
             return value_cow
     
-    # =========================== convert OT =====================
-    print("Chuan bi du lieu")
-    dataOT = xlrd.open_workbook(nameOT)
-    ot = dataOT.sheet_by_index(0)
-    ot_convert = xlsxwriter.Workbook('../cham-cong/convert/OT_convert.xlsx')
-    add_sheet = ot_convert.add_worksheet()
-    for i in range(ot.nrows-3):
-        id = ot.cell_value(i+3, 0)
-        date = ot.cell_value(i+3, 4)
-        date1 =ot.cell_value(i+3, 5)
-        x =(datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
-        y =(datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
-        timeOT = y - x
-        hh, mm , ss = map(int, str(timeOT).split(':'))
-        ot3 = hh + mm/60
-        d = x.strftime("%Y-%m-%d")
-        add_sheet.write(i,0, str(id))
-        add_sheet.write(i,1, ot3)
-        
-        add_sheet.write(i,2, d)
-    ot_convert.close()
-
     # =========================== Xoá data =====================
+    print("Clear data")
     try: 
         baocao_del = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
         data_baocao_del = baocao_del.sheet_by_index(0)
@@ -75,30 +61,25 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
     for ID in tqdm(range(data.nrows -3)):
-        if(data.cell_value(ID+2, 0) == data.cell_value(ID+3, 0) and data.cell_value(ID+2, 3) == data.cell_value(ID+3, 3)):            
-            w_sheet.write(ID+3, 26, hopnhat(ID, 26))
-            w_sheet.write(ID+3, 27, hopnhat(ID, 27))
-            w_sheet.write(ID+3, 28, hopnhat(ID, 28))
-            w_sheet.write(ID+3, 29, hopnhat(ID, 29))
-            w_sheet.write(ID+3, 30, hopnhat(ID, 30))
-            w_sheet.write(ID+3, 31, hopnhat(ID, 31))
-            w_sheet.write(ID+3, 32, hopnhat(ID, 32))
-            w_sheet.write(ID+3, 33, hopnhat(ID, 33))
-            w_sheet.write(ID+3, 34, hopnhat(ID, 34))
-            w_sheet.write(ID+3, 35, hopnhat(ID, 35))
+        if(data.cell_value(ID+2, khaibao.MaNV) == data.cell_value(ID+3, khaibao.MaNV) and data.cell_value(ID+2, khaibao.Ngay) == data.cell_value(ID+3, khaibao.Ngay)):            
+            w_sheet.write(ID+3, khaibao.LateIn, hopnhat(ID, khaibao.LateIn))
+            w_sheet.write(ID+3, khaibao.EarlyOut, hopnhat(ID, khaibao.EarlyOut))
+            w_sheet.write(ID+3, khaibao.Absence, hopnhat(ID, khaibao.Absence))
+            w_sheet.write(ID+3, khaibao.NormalOT, hopnhat(ID, khaibao.NormalOT))
+            w_sheet.write(ID+3, khaibao.WeekendOT, hopnhat(ID, khaibao.WeekendOT))
+            w_sheet.write(ID+3, khaibao.HolidayOT, hopnhat(ID, khaibao.HolidayOT))
+            w_sheet.write(ID+3, khaibao.OT1, hopnhat(ID, khaibao.OT1))
+            w_sheet.write(ID+3, khaibao.Xinlamthem, hopnhat(ID, khaibao.Xinlamthem))
+            w_sheet.write(ID+3, khaibao.Nghiphepngay, hopnhat(ID, khaibao.Nghiphepngay))
 
     wb.save('../cham-cong/convert/Du lieu hop nhat.xlsx')
 
     # =========================== Get data =====================
     print("Get data va chuan bi bao cao")
-    chamcong = xlrd.open_workbook('../cham-cong/convert/Du lieu hop nhat.xlsx')
+    chamcong = xlrd.open_workbook('../cham-cong/convert/Du lieu hop nhat.xlsx', formatting_info=True)
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
-
-    OT_approve = xlrd.open_workbook('../cham-cong/convert/OT_convert.xlsx')
-    dataOT_approve = OT_approve.sheet_by_index(0)
-
     #Tạo template báo cáo
 
     baocao = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
@@ -108,8 +89,8 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     colect_id = []
     colect_date = []
     for id in range(data.nrows-3):
-        colect_id.append(data.cell_value(id+3, 0))
-        colect_date.append(data.cell_value(id+3, 3))
+        colect_id.append(data.cell_value(id+3, khaibao.MaNV))
+        colect_date.append(data.cell_value(id+3, khaibao.Ngay))
     c = collections.Counter(colect_id)
     d = collections.Counter(colect_date)
     ID_baocao = c.keys()
@@ -121,17 +102,16 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
 
     nhanvien = xlrd.open_workbook(namenhanvien)
     sh_nhanvien = nhanvien.sheet_by_index(0)
-
     colen = 0
     for z in ID_baocao:
         for j in range(data.nrows -3):
             if z == sh_nhanvien.cell_value(j+3, 0):
-                w_sheet_baocao.write(colen+7, 0, sh_nhanvien.cell_value(j+3, 0))
-                w_sheet_baocao.write(colen+7, 1, sh_nhanvien.cell_value(j+3, 1))
-                w_sheet_baocao.write(colen+7, 2, sh_nhanvien.cell_value(j+3, 3))
-                w_sheet_baocao.write(colen+7, 3, sh_nhanvien.cell_value(j+3, 2))
-                w_sheet_baocao.write(colen+7, 4, sh_nhanvien.cell_value(j+3, 6))
-                w_sheet_baocao.write(colen+7, 5, "")
+                w_sheet_baocao.write(colen+7, 0, sh_nhanvien.cell_value(j+3, 0)) # Ma nhan vien
+                w_sheet_baocao.write(colen+7, 1, sh_nhanvien.cell_value(j+3, 1)) # Ten nhan vien
+                w_sheet_baocao.write(colen+7, 2, sh_nhanvien.cell_value(j+3, 3)) # Bo phan
+                w_sheet_baocao.write(colen+7, 3, sh_nhanvien.cell_value(j+3, 2)) # Khoi
+                w_sheet_baocao.write(colen+7, 4, sh_nhanvien.cell_value(j+3, 6)) # Ngay thue
+                w_sheet_baocao.write(colen+7, khaibao.Ca, "")
                 colen = colen+1
                 break
             else:
@@ -149,103 +129,141 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
     baocao_1 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data_baocao = baocao_1.sheet_by_index(0)
     mod_day_baocao = copy(baocao_1)
+    mod_day_inout = copy(baocao_1)
     w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
-
+    w_sheet_InOut = mod_day_inout.get_sheet(0)
+    dataOT = xlrd.open_workbook(nameOT)
+    ot = dataOT.sheet_by_index(0)
     # =========================== Mã hoá ca =====================
-    print("Ma hoa ca va OT")
-    print(data.nrows)
-    for m in tqdm(range(data.nrows-3)):
-        print(m)
-        if("Tối" in str(data.cell_value(m + 3, 5)) and data.cell_value(m + 4, 12) != "None" and data.cell_value(m + 3, 12) != "None" and data.cell_value(m + 4, 11) == "None" and ("Sáng" in str(data.cell_value(m + 4, 5)))):
-            print(m)
-            if("Cuối tuần" in str(data.cell_value(m + 4, 5))):
-                w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
-                temp = data.cell_value(m + 4, 30)
-                w_sheet.write(m+4, 30, float(temp) + 4)
-
+    print("Xử lý ngày chủ nhật ca đúp không có giờ vào")
+    print("Chuan bi du lieu OT")
+    for m in tqdm(range(data.nrows-4)):
+        if("Tối" in str(data.cell_value(m + 3, khaibao.Ca)) and data.cell_value(m + 4, khaibao.Giora) != "None" and data.cell_value(m + 3, khaibao.Giora) != "None" and data.cell_value(m + 4, khaibao.Giovao) == "None" and ("Sáng" in str(data.cell_value(m + 4, khaibao.Ca)))):
+            if("Cuối tuần" in str(data.cell_value(m + 4, khaibao.Ca))):
+                w_sheet.write(m+4, khaibao.Giovao, data.cell_value(m + 3, khaibao.Giora))
+                temp = data.cell_value(m + 4, khaibao.WeekendOT)
+                w_sheet.write(m+4, khaibao.WeekendOT, float(temp) + 4)
             else: 
-                if(float(data.cell_value(m + 3, 25)) >= 5):
-                    w_sheet.write(m+4, 11, data.cell_value(m + 3, 12))
-                    temp = data.cell_value(m + 4, 29)
-                    w_sheet.write(m+4, 29, float(temp) + 4)
+                if(float(data.cell_value(m + 3, khaibao.Regular)) >= 5):
+                    w_sheet.write(m+4, khaibao.Giovao, data.cell_value(m + 3, khaibao.Giora))
+                    temp = data.cell_value(m + 4, khaibao.NormalOT)
+                    w_sheet.write(m+4, khaibao.NormalOT, float(temp) + 4)
+        # =========================== convert OT =====================
+
+        for i in range(ot.nrows-3):
+            x =(datetime.strptime(ot.cell_value(i+3, khaibao.OTStart),"%Y-%m-%d %H:%M:%S"))
+            if(data.cell_value(m+3, khaibao.MaNV) == ot.cell_value(i, khaibao.OTMaNV) and data.cell_value(m+3, khaibao.Ngay) == x.strftime("%Y-%m-%d")):
+                date = ot.cell_value(i+3, khaibao.OTStart)
+                date1 =ot.cell_value(i+3, khaibao.OTEnd)
+                x =(datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
+                y =(datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
+                timeOT = y - x
+                hh, mm , ss = map(int, str(timeOT).split(':'))
+                ot3 = hh + mm/60
+                w_sheet.write(m + 3,khaibao.Xinlamthem, ot3)
 
     wb.save('../cham-cong/convert/baocao.xlsx')
-
+    
     chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
     
     # =========================== Duyệt OT =====================
-    print("Duyet OT")
-    for j in tqdm(range(data.nrows-3)):
-        if dataOT_approve.nrows == 0:
-            w_sheet.write(j+3, 35,myround(float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31))))
-        else:
-            for i in range(dataOT_approve.nrows):
-                if  dataOT_approve.cell_value(i, 0) == data.cell_value(j+3, 0) and dataOT_approve.cell_value(i, 2) == data.cell_value(j+3, 3):
-                    w_sheet.write(j+3, 35, myround(float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 32))))
-                    break
-                else:
-                    w_sheet.write(j+3, 35, myround(float( data.cell_value(j+3, 29))+float( data.cell_value(j+3, 30))+float( data.cell_value(j+3, 31))))
-    
-    for j in tqdm(range(data.nrows-3)):
-        otTime = (float( data.cell_value(j+3, 29)) + float( data.cell_value(j+3, 30)) + float( data.cell_value(j+3, 31)))
-        if ((otTime) <= (otTime + float( data.cell_value(j+3, 32)) - 2)):
-            w_sheet.write(j+3, 35,"RR")
-
+    # print("OT")
+    # for j in tqdm(range(data.nrows-3)):
+    #     if(float(data.cell_value(j+3, khaibao.OT1))<=1):
+    #         if(float(data.cell_value(j+3, khaibao.WeekendOT))+ float(data.cell_value(j+3, khaibao.HolidayOT))> float(data.cell_value(j+3, khaibao.Xinlamthem))):
+    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.Xinlamthem))))
+    #         else:
+    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.WeekendOT))+float( data.cell_value(j+3, khaibao.HolidayOT))))
+    #     else:
+    #         if((float(data.cell_value(j+3, khaibao.OT1))>=float(data.cell_value(j+3, khaibao.Xinlamthem)))):
+    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.Xinlamthem))))
+    #         # XinOT > (OT1, WOT, HOT) => OT = OT1 (Báo lỗi)
+    #         elif((float(data.cell_value(j+3, khaibao.OT1))<float(data.cell_value(j+3, khaibao.Xinlamthem)))):
+    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.OT1))))           
+    print("Ma hoa ca va OT")
     for m in tqdm(range(data.nrows-3)):
-
         #Kiem tra ca
-        if(float(data.cell_value(m+3, 25))>=5):
-            if(data.cell_value(m+3, 5) == "Sản xuất Sáng" or data.cell_value(m+3, 5) == "Bảo trì Sáng"):
-                w_sheet.write(m+3, 36, "A")
-            elif(data.cell_value(m+3, 5) == "Sản xuất Tối" or data.cell_value(m+3, 5) == "Bảo trì Tối"):
-                w_sheet.write(m+3, 36, "C")
-            elif(data.cell_value(m+3, 5) == "Ca Chiều"):
-                w_sheet.write(m+3, 36, "B")
-            elif("Hành Chính" in data.cell_value(m+3, 5)):
-                w_sheet.write(m+3, 36, "D")
-        elif(float(data.cell_value(m+3, 25))<5 or float(data.cell_value(m+3, 25))>=3):
-            if(data.cell_value(m+3, 5) == "Sản xuất Sáng" or data.cell_value(m+3, 5) == "Bảo trì Sáng"):
-                w_sheet.write(m+3, 36, "RR5")
-            elif(data.cell_value(m+3, 5) == "Sản xuất Tối" or data.cell_value(m+3, 5) == "Bảo trì Tối"):
-                w_sheet.write(m+3, 36, "RR5")
-            elif(data.cell_value(m+3, 5) == "Ca Chiều"):
-                w_sheet.write(m+3, 36, "RR5")
-            elif("Hành Chính" in data.cell_value(m+3, 5)):
-                w_sheet.write(m+3, 36, "RR5")
+        if(float(data.cell_value(m+3, khaibao.Regular))>=5):
+            if(data.cell_value(m+3, khaibao.Ca) == "Sản xuất Sáng" or data.cell_value(m+3, khaibao.Ca) == "Bảo trì Sáng"):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "A")
+            elif(data.cell_value(m+3, khaibao.Ca) == "Sản xuất Tối" or data.cell_value(m+3, khaibao.Ca) == "Bảo trì Tối"):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "C")
+            elif(data.cell_value(m+3, khaibao.Ca) == "Ca Chiều"):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "B")
+            elif("Hành Chính" in data.cell_value(m+3, khaibao.Ca)):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "D")
+        elif(float(data.cell_value(m+3, khaibao.Regular))<5 or float(data.cell_value(m+3, khaibao.Regular))>=3):
+            if(data.cell_value(m+3, khaibao.Ca) == "Sản xuất Sáng" or data.cell_value(m+3, khaibao.Ca) == "Bảo trì Sáng"):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
+            elif(data.cell_value(m+3, khaibao.Ca) == "Sản xuất Tối" or data.cell_value(m+3, khaibao.Ca) == "Bảo trì Tối"):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
+            elif(data.cell_value(m+3, khaibao.Ca) == "Ca Chiều"):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
+            elif("Hành Chính" in data.cell_value(m+3, khaibao.Ca)):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
         else:
-            w_sheet.write(m+3, 36, "RR")
+            w_sheet.write(m+3, khaibao.MaHoaCa, "RR")
  
          #Kiem tra quen cham cong
-        if (data.cell_value(m+3, 11) == "None" or data.cell_value(m+3, 12) == "None"):
-            w_sheet.write(m+3, 36, "R0,D5")
+        if (data.cell_value(m+3, khaibao.Giovao) == "None" or data.cell_value(m+3, khaibao.Giora) == "None"):
+            w_sheet.write(m+3, khaibao.MaHoaCa, "R0")
 
-        if (data.cell_value(m+3, 11) == "None" and data.cell_value(m+3, 12) == "None"):
-            w_sheet.write(m+3, 36, "P0")
+        if (data.cell_value(m+3, khaibao.Giovao) == "None" and data.cell_value(m+3, khaibao.Giora) == "None"):
+            w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
 
         #Kiem tra thu 7
-        if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, 22) == "Gián Tiếp"):
-            if(float(data.cell_value(m+3, 25))<5):
-                w_sheet.write(m+3, 36, "nt7")
+        if(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, khaibao.Khoi) == "Gián Tiếp"):
+            if(float(data.cell_value(m+3, khaibao.Regular))<5):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "nt7")
             else:
-                w_sheet.write(m+3, 36, "D")
+                w_sheet.write(m+3, khaibao.MaHoaCa, "D")
 
         #Kiem tra chu nhat
-        if(datetime.strptime(data.cell_value(m+3, 3), "%Y-%m-%d").weekday()==6):
-            if(float(data.cell_value(m+3, 30)) > 1 and data.cell_value(m+3, 5) == ""):
-                w_sheet.write(m+3, 36, "CN")
+        if(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").weekday()==6):
+            if(float(data.cell_value(m+3, khaibao.WeekendOT)) > 1 and data.cell_value(m+3, khaibao.Ca) == ""):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "CN")
             else:
-                w_sheet.write(m+3, 36, "")
+                w_sheet.write(m+3, khaibao.MaHoaCa, "")
+        # =========================== Duyệt OT =====================
+        if(float(data.cell_value(m+3, khaibao.OT1))<=1):
+            if(float(data.cell_value(m+3, khaibao.WeekendOT))+ float(data.cell_value(m+3, khaibao.HolidayOT))> float(data.cell_value(m+3, khaibao.Xinlamthem))):
+                w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.Xinlamthem))))
+            else:
+                w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.WeekendOT))+float( data.cell_value(m+3, khaibao.HolidayOT))))
+        else:
+            if((float(data.cell_value(m+3, khaibao.OT1))>=float(data.cell_value(m+3, khaibao.Xinlamthem)))):
+                w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.Xinlamthem))))
+            # XinOT > (OT1, WOT, HOT) => OT = OT1 (Báo lỗi)
+            elif((float(data.cell_value(m+3, khaibao.OT1))<float(data.cell_value(m+3, khaibao.Xinlamthem)))):
+                w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.OT1))))      
+        #Kiem tra ngay le
+        for hol in liHoliday:
+            x = 0.0
+            if(int(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").day)== int(hol)):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "L")
+                if data.cell_value(m+3, khaibao.WorkedHours) != "":
+                    h, mi = data.cell_value(m+3, khaibao.WorkedHours).split(":")
+                    x = myround(float(h) + float(mi)/60)
+                if(float(data.cell_value(m+3, khaibao.Xinlamthem))>=x):
+                    w_sheet.write(m+3, khaibao.TongOT, x)
+                elif((float(data.cell_value(m+3, khaibao.Xinlamthem)))<x):
+                    w_sheet.write(m+3, khaibao.TongOT,myround(float( data.cell_value(m+3, khaibao.Xinlamthem)))) 
  
     wb.save('../cham-cong/convert/baocao.xlsx')
 
     # =========================== Chuyển dữ liệu sang report =============================================
+
+    # Thêm 1 sheet giờ vào giờ ra
+
+
+
     chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data = chamcong.sheet_by_index(0)
-    wb = copy(chamcong)
-    w_sheet = wb.get_sheet(0)
+    # wb = copy(chamcong)
+    # w_sheet = wb.get_sheet(0)
 
 
     # # Chuyển ngày
@@ -256,8 +274,11 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
             if data_baocao.cell_value(i+7, 0) == data.cell_value(j+3, 0):
                 for k in range(0,oi,2):
                     if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
-                            w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, 36))
-                            w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, 35))
+                            w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, khaibao.MaHoaCa))
+                            w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, khaibao.TongOT))
+                            w_sheet_InOut.write(i+7,  k+6, data.cell_value(j+3, khaibao.Giovao))
+                            w_sheet_InOut.write(i+7,  k+7, data.cell_value(j+3, khaibao.Giora))
+    mod_day_inout.save('../cham-cong/convert/inout.xlsx')
     mod_day_baocao.save('../cham-cong/convert/baocao.xlsx')
 
     print("Chuyen du lieu vao bao cao vi pham")
@@ -266,21 +287,21 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
         for j in range(data.nrows-3):
             if data_baocao.cell_value(i+7, 0) == data.cell_value(j+3, 0):
                 for k in range(0,oi,2):
-                    if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
-                        if data.cell_value(j+3, 11) == "None":
+                    if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, khaibao.Ngay):
+                        if data.cell_value(j+3, khaibao.Giovao) == "None":
                             w_sheet_baocao.write(i+7,  k+6, "QCC")
-                        elif data.cell_value(j+3, 26) != "":
-                            kll = float(data.cell_value(j+3, 26))
+                        elif data.cell_value(j+3, khaibao.LateIn) != "":
+                            kll = data.cell_value(j+3, khaibao.LateIn)
                             w_sheet_baocao.write(i+7,  k+6, kll)
-                        if data.cell_value(j+3, 12) == "None":
+                        if data.cell_value(j+3, khaibao.Giora) == "None":
                             w_sheet_baocao.write(i+7,  k+7, "QCC")
                         elif data.cell_value(j+3, 27) != "":
-                            kl = float(data.cell_value(j+3, 27))
+                            kl = data.cell_value(j+3, khaibao.EarlyOut)
                             w_sheet_baocao.write(i+7,  k+7, kl)
-                        if data.cell_value(j+3, 11) == "None" and data.cell_value(j+3, 12) == "None":
+                        if data.cell_value(j+3, khaibao.Giovao) == "None" and data.cell_value(j+3, khaibao.Giora) == "None":
                             w_sheet_baocao.write(i+7,  k+6, "Nghi")
                             w_sheet_baocao.write(i+7,  k+7, "")
-                        if data.cell_value(j+3, 11) == "None" and data.cell_value(j+3, 12) == "None" and data.cell_value(j+3, 5) == "":
+                        if data.cell_value(j+3, khaibao.Giovao) == "None" and data.cell_value(j+3, khaibao.Giora) == "None" and data.cell_value(j+3, khaibao.Ca) == "":
                             w_sheet_baocao.write(i+7,  k+6, "")
                     
     mod_baocao.save('../cham-cong/convert/Bao cao vi pham.xlsx')
@@ -388,5 +409,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
     data_convert.save("../cham-cong/report/Bao cao vi pham thang "+text_thang+" nam "+text_nam + ".xlsx")
-    print("done")              
-    
+    print("done") 
+chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
+data = chamcong.sheet_by_index(0)
+print(data.nrows)
