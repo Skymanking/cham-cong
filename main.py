@@ -169,20 +169,6 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
     wb = copy(chamcong)
     w_sheet = wb.get_sheet(0)
     
-    # =========================== Duyệt OT =====================
-    # print("OT")
-    # for j in tqdm(range(data.nrows-3)):
-    #     if(float(data.cell_value(j+3, khaibao.OT1))<=1):
-    #         if(float(data.cell_value(j+3, khaibao.WeekendOT))+ float(data.cell_value(j+3, khaibao.HolidayOT))> float(data.cell_value(j+3, khaibao.Xinlamthem))):
-    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.Xinlamthem))))
-    #         else:
-    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.WeekendOT))+float( data.cell_value(j+3, khaibao.HolidayOT))))
-    #     else:
-    #         if((float(data.cell_value(j+3, khaibao.OT1))>=float(data.cell_value(j+3, khaibao.Xinlamthem)))):
-    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.Xinlamthem))))
-    #         # XinOT > (OT1, WOT, HOT) => OT = OT1 (Báo lỗi)
-    #         elif((float(data.cell_value(j+3, khaibao.OT1))<float(data.cell_value(j+3, khaibao.Xinlamthem)))):
-    #             w_sheet.write(j+3, khaibao.TongOT, myround(float( data.cell_value(j+3, khaibao.NormalOT))+float( data.cell_value(j+3, khaibao.OT1))))           
     print("Ma hoa ca va OT")
     for m in tqdm(range(data.nrows-3)):
         #Kiem tra ca
@@ -195,17 +181,16 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "B")
             elif("Hành Chính" in data.cell_value(m+3, khaibao.Ca)):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "D")
-        elif(float(data.cell_value(m+3, khaibao.Regular))<5 or float(data.cell_value(m+3, khaibao.Regular))>=3):
-            if(data.cell_value(m+3, khaibao.Ca) == "Sản xuất Sáng" or data.cell_value(m+3, khaibao.Ca) == "Bảo trì Sáng"):
+        elif(float(data.cell_value(m+3, khaibao.Regular))<5 and float(data.cell_value(m+3, khaibao.Regular))>=2):
+            if(float(data.cell_value(m+3, khaibao.Nghiphepngay))>0):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
-            elif(data.cell_value(m+3, khaibao.Ca) == "Sản xuất Tối" or data.cell_value(m+3, khaibao.Ca) == "Bảo trì Tối"):
-                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
-            elif(data.cell_value(m+3, khaibao.Ca) == "Ca Chiều"):
-                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
-            elif("Hành Chính" in data.cell_value(m+3, khaibao.Ca)):
-                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
+            else: 
+                w_sheet.write(m+3, khaibao.MaHoaCa, "P5,D5")
         else:
-            w_sheet.write(m+3, khaibao.MaHoaCa, "RR")
+            if(float(data.cell_value(m+3, khaibao.Nghiphepngay))>0):
+                w_sheet.write(m+3, khaibao.MaHoaCa, "P")
+            else: 
+                w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
  
          #Kiem tra quen cham cong
         if (data.cell_value(m+3, khaibao.Giovao) == "None" or data.cell_value(m+3, khaibao.Giora) == "None"):
@@ -240,7 +225,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
             elif((float(data.cell_value(m+3, khaibao.OT1))<float(data.cell_value(m+3, khaibao.Xinlamthem)))):
                 w_sheet.write(m+3, khaibao.TongOT, myround(float( data.cell_value(m+3, khaibao.NormalOT))+float( data.cell_value(m+3, khaibao.OT1))))      
         #Kiem tra ngay le
-        for hol in liHoliday:
+        for hol in liHoliday: 
             x = 0.0
             if(int(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").day)== int(hol)):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "L")
@@ -251,6 +236,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                     w_sheet.write(m+3, khaibao.TongOT, x)
                 elif((float(data.cell_value(m+3, khaibao.Xinlamthem)))<x):
                     w_sheet.write(m+3, khaibao.TongOT,myround(float( data.cell_value(m+3, khaibao.Xinlamthem)))) 
+        #Kiem tra nghi phep
  
     wb.save('../cham-cong/convert/baocao.xlsx')
 
@@ -275,7 +261,8 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                 for k in range(0,oi,2):
                     if data_baocao.cell_value(5, k+6) == data.cell_value(j+3, 3):
                             w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, khaibao.MaHoaCa))
-                            w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, khaibao.TongOT))
+                            if(float(data.cell_value(j+3, khaibao.TongOT))>0):
+                                w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, khaibao.TongOT))
                             w_sheet_InOut.write(i+7,  k+6, data.cell_value(j+3, khaibao.Giovao))
                             w_sheet_InOut.write(i+7,  k+7, data.cell_value(j+3, khaibao.Giora))
     mod_day_inout.save('../cham-cong/convert/inout.xlsx')
