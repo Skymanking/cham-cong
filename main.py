@@ -184,7 +184,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "D")
         elif(float(data.cell_value(m+3, khaibao.Regular))<5 and float(data.cell_value(m+3, khaibao.Regular))>=2):
             if(float(data.cell_value(m+3, khaibao.Nghiphepngay))>0):
-                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
+                w_sheet.write(m+3, khaibao.MaHoaCa, "P5,D5")
             else: 
                 w_sheet.write(m+3, khaibao.MaHoaCa, "P5,D5")
         else:
@@ -197,14 +197,14 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
             elif(float(data.cell_value(m+3, khaibao.Nghiphepngay))>0):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "P")
             else: 
-                w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
+                w_sheet.write(m+3, khaibao.MaHoaCa, "P")
  
          #Kiem tra quen cham cong
         if (data.cell_value(m+3, khaibao.Giovao) == "None" or data.cell_value(m+3, khaibao.Giora) == "None"):
-            w_sheet.write(m+3, khaibao.MaHoaCa, "R0")
+            w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
 
         if (data.cell_value(m+3, khaibao.Giovao) == "None" and data.cell_value(m+3, khaibao.Giora) == "None"):
-            w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
+            w_sheet.write(m+3, khaibao.MaHoaCa, "P")
 
         #Kiem tra thu 7
         if(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, khaibao.Khoi) == "Gián Tiếp"):
@@ -349,6 +349,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
 
 
     # ====================================Chuyen du lieu vao report==========================
+    # BAO CAO THANG
     baocao_2 = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data_baocao = baocao_2.sheet_by_index(0)
     all_rows_baocao = []
@@ -369,6 +370,29 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
         for col in range(1, len(all_rows_baocao[0])+1):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
     data_convert.save("../cham-cong/report/Bang cong thang "+text_thang+" nam "+text_nam +".xlsx")
+
+    # BAO CAO CHECK IN CHECK OUT
+    baocao_2 = xlrd.open_workbook('../cham-cong/convert/inout.xlsx')
+    data_baocao = baocao_2.sheet_by_index(0)
+    all_rows_baocao_IO = []
+    
+    for row in range(7 ,data_baocao.nrows):
+        curr_row = []
+        for col in range(data_baocao.ncols):
+            curr_row.append(data_baocao.cell_value(row, col))
+        all_rows_baocao_IO.append(curr_row)
+
+    data_convert = openpyxl.load_workbook("../cham-cong/report/Bang cong thang "+text_thang+" nam "+text_nam +".xlsx")
+    sheet_name_data_convert_IO = data_convert.sheetnames[1]
+    sh_data_convert_IO = data_convert[sheet_name_data_convert_IO]
+    sh_data_convert_IO.cell(6, 4).value = text_thang*1
+    sh_data_convert_IO.cell(6, 6).value = text_nam*1
+
+    for row in tqdm(range(1, len(all_rows_baocao_IO)+1)):
+        for col in range(1, len(all_rows_baocao_IO[0])+1):
+            sh_data_convert_IO.cell(row+10, col).value = all_rows_baocao_IO[row-1][col-1]
+    data_convert.save("../cham-cong/report/Bang cong thang "+text_thang+" nam "+text_nam +".xlsx")
+
 
     # BAO CAO Vi PHAM
     

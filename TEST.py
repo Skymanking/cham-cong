@@ -184,7 +184,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "D")
         elif(float(data.cell_value(m+3, khaibao.Regular))<5 and float(data.cell_value(m+3, khaibao.Regular))>=2):
             if(float(data.cell_value(m+3, khaibao.Nghiphepngay))>0):
-                w_sheet.write(m+3, khaibao.MaHoaCa, "R0,D5")
+                w_sheet.write(m+3, khaibao.MaHoaCa, "P5,D5")
             else: 
                 w_sheet.write(m+3, khaibao.MaHoaCa, "P5,D5")
         else:
@@ -197,14 +197,14 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
             elif(float(data.cell_value(m+3, khaibao.Nghiphepngay))>0):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "P")
             else: 
-                w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
+                w_sheet.write(m+3, khaibao.MaHoaCa, "P")
  
          #Kiem tra quen cham cong
         if (data.cell_value(m+3, khaibao.Giovao) == "None" or data.cell_value(m+3, khaibao.Giora) == "None"):
-            w_sheet.write(m+3, khaibao.MaHoaCa, "R0")
+            w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
 
         if (data.cell_value(m+3, khaibao.Giovao) == "None" and data.cell_value(m+3, khaibao.Giora) == "None"):
-            w_sheet.write(m+3, khaibao.MaHoaCa, "P0")
+            w_sheet.write(m+3, khaibao.MaHoaCa, "P")
 
         #Kiem tra thu 7
         if(datetime.strptime(data.cell_value(m+3, khaibao.Ngay), "%Y-%m-%d").weekday()==5 and data.cell_value(m+3, khaibao.Khoi) == "Gián Tiếp"):
