@@ -272,8 +272,10 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                             w_sheet_baocao_day.write(i+7,  k+6, data.cell_value(j+3, khaibao.MaHoaCa))
                             if(float(data.cell_value(j+3, khaibao.TongOT))>0):
                                 w_sheet_baocao_day.write(i+7,  k+7, data.cell_value(j+3, khaibao.TongOT))
-                            w_sheet_InOut.write(i+7,  k+6, data.cell_value(j+3, khaibao.Giovao))
-                            w_sheet_InOut.write(i+7,  k+7, data.cell_value(j+3, khaibao.Giora))
+                            if(data.cell_value(j+3, khaibao.Giovao) != "None"):
+                                w_sheet_InOut.write(i+7,  k+6, data.cell_value(j+3, khaibao.Giovao))
+                            if(data.cell_value(j+3, khaibao.Giora) != "None"):
+                                w_sheet_InOut.write(i+7,  k+7, data.cell_value(j+3, khaibao.Giora))
     mod_day_inout.save('../cham-cong/convert/inout.xlsx')
     mod_day_baocao.save('../cham-cong/convert/baocao.xlsx')
 
@@ -434,6 +436,3 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
             sh_data_convert.cell(row+10, col).value = all_rows_baocao[row-1][col-1]
     data_convert.save("../cham-cong/report/Bao cao vi pham thang "+text_thang+" nam "+text_nam + ".xlsx")
     print("done") 
-chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
-data = chamcong.sheet_by_index(0)
-print(data.nrows)
