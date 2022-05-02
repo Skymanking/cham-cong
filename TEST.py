@@ -159,7 +159,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                 x =(datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
                 y =(datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
                 timeOT = y - x
-                hh, mm , ss = map(int, str(timeOT).split(':'))
+                hh, mm , ss = map(float, str(timeOT).split(':'))
                 ot3 = hh + mm/60
                 w_sheet.write(m + 3,khaibao.Xinlamthem, ot3)
 
@@ -174,11 +174,11 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
     for m in tqdm(range(data.nrows-3)):
         #Kiem tra ca
         if(float(data.cell_value(m+3, khaibao.Regular))>=5):
-            if(data.cell_value(m+3, khaibao.Ca) == "Sản xuất Sáng" or data.cell_value(m+3, khaibao.Ca) == "Bảo trì Sáng"):
+            if( "Sản xuất Sáng" in data.cell_value(m+3, khaibao.Ca) or "Bảo trì Sáng" in data.cell_value(m+3, khaibao.Ca)):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "A")
-            elif(data.cell_value(m+3, khaibao.Ca) == "Sản xuất Tối" or data.cell_value(m+3, khaibao.Ca) == "Bảo trì Tối"):
+            elif("Sản xuất Tối" in data.cell_value(m+3, khaibao.Ca) or "Bảo trì Tối" in data.cell_value(m+3, khaibao.Ca)):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "C")
-            elif(data.cell_value(m+3, khaibao.Ca) == "Ca Chiều"):
+            elif("Ca Chiều" in data.cell_value(m+3, khaibao.Ca)):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "B")
             elif("Hành Chính" in data.cell_value(m+3, khaibao.Ca)):
                 w_sheet.write(m+3, khaibao.MaHoaCa, "D")
