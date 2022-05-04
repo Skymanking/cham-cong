@@ -133,8 +133,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
     mod_day_inout = copy(baocao_1)
     w_sheet_baocao_day = mod_day_baocao.get_sheet(0)
     w_sheet_InOut = mod_day_inout.get_sheet(0)
-    dataOT = xlrd.open_workbook(nameOT)
-    ot = dataOT.sheet_by_index(0)
+
     # =========================== Mã hoá ca =====================
     print("Xử lý ngày chủ nhật ca đúp không có giờ vào")
     print("Chuan bi du lieu OT")
@@ -149,22 +148,25 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                     w_sheet.write(m+4, khaibao.Giovao, data.cell_value(m + 3, khaibao.Giora))
                     temp = data.cell_value(m + 4, khaibao.NormalOT)
                     w_sheet.write(m+4, khaibao.NormalOT, float(temp) + 4)
-        # =========================== convert OT =====================
+        # =========================== convert OT =====================        
 
+    wb.save('../cham-cong/convert/baocao.xlsx')
+    dataOT = xlrd.open_workbook(nameOT)
+    ot = dataOT.sheet_by_index(0)
+    for m in tqdm(range(data.nrows-3)):
         for i in range(ot.nrows-3):
             x =(datetime.strptime(ot.cell_value(i+3, khaibao.OTStart),"%Y-%m-%d %H:%M:%S"))
-            if(data.cell_value(m+3, khaibao.MaNV) == ot.cell_value(i, khaibao.OTMaNV) and data.cell_value(m+3, khaibao.Ngay) == x.strftime("%Y-%m-%d")):
+            if((data.cell_value(m+3, khaibao.MaNV) == ot.cell_value(i+3, khaibao.OTMaNV)) and (data.cell_value(m+3, khaibao.Ngay) in ot.cell_value(i+3, khaibao.OTStart))):
                 date = ot.cell_value(i+3, khaibao.OTStart)
                 date1 =ot.cell_value(i+3, khaibao.OTEnd)
                 x =(datetime.strptime(date,"%Y-%m-%d %H:%M:%S"))
                 y =(datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
                 timeOT = y - x
-                hh, mm , ss = map(float, str(timeOT).split(':'))
+                hh, mm , ss = map(int, str(timeOT).split(':'))
                 ot3 = hh + mm/60
                 w_sheet.write(m + 3,khaibao.Xinlamthem, ot3)
-
     wb.save('../cham-cong/convert/baocao.xlsx')
-    
+
     chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
     data = chamcong.sheet_by_index(0)
     wb = copy(chamcong)
