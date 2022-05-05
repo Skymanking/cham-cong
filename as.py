@@ -20,7 +20,7 @@ for m in tqdm(range(data.nrows-3)):
     for i in range(ot.nrows-3):
         if((data.cell_value(m+3, khaibao.MaNV) in ot.cell_value(i+3, khaibao.OTMaNV)) and (data.cell_value(m+3, khaibao.Ngay) in ot.cell_value(i+3, khaibao.OTStart))):
             date1 = ot.cell_value(i+3, khaibao.OTStart)
-            date2 =ot.cell_value(i+3, khaibao.OTEnd)
+            date2 = ot.cell_value(i+3, khaibao.OTEnd)
             x =(datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
             y =(datetime.strptime(date2,"%Y-%m-%d %H:%M:%S"))
             timeOT = y - x

@@ -127,5 +127,3 @@ sky = Giaodien(GD)
 sky.place(relwidth = 1, relheight = 1)
 
 GD.mainloop()
-
-
