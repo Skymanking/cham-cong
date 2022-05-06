@@ -154,7 +154,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
     dataOT = xlrd.open_workbook(nameOT)
     ot = dataOT.sheet_by_index(0)
     for m in tqdm(range(data.nrows-3)):
-        print(m)
+        ot3 = 0
         for i in range(ot.nrows-3):
             x =(datetime.strptime(ot.cell_value(i+3, khaibao.OTStart),"%Y-%m-%d %H:%M:%S"))
             if((data.cell_value(m+3, khaibao.MaNV) == ot.cell_value(i+3, khaibao.OTMaNV)) and (data.cell_value(m+3, khaibao.Ngay) in ot.cell_value(i+3, khaibao.OTStart))):
@@ -164,9 +164,8 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                 y =(datetime.strptime(date1,"%Y-%m-%d %H:%M:%S"))
                 timeOT = y - x
                 hh, mm , ss = map(int, str(timeOT).split(':'))
-                ot3 = hh + mm/60
+                ot3 = ot3 + (hh + mm/60)
                 w_sheet.write(m + 3,khaibao.Xinlamthem, ot3)
-                print(data.cell_value(m+3, khaibao.MaNV), ot.cell_value(i+3, khaibao.OTMaNV), data.cell_value(m+3, khaibao.Ngay), ot.cell_value(i+3, khaibao.OTStart), ot3)
     wb.save('../cham-cong/convert/baocao.xlsx')
 
     chamcong = xlrd.open_workbook('../cham-cong/convert/baocao.xlsx')
