@@ -10,7 +10,6 @@ import openpyxl
 from openpyxl.styles import PatternFill, Alignment
 from tqdm import tqdm, trange
 from datetime import date, datetime
-
 def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
     if (holiday == ""):
         print("Holiday is emtry")
@@ -135,19 +134,21 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
     w_sheet_InOut = mod_day_inout.get_sheet(0)
 
     # =========================== Mã hoá ca =====================
-    print("Xử lý ngày chủ nhật ca đúp không có giờ vào")
+    print("Xu ly ngay chu nhat khong co gio vao")
     print("Chuan bi du lieu OT")
     for m in tqdm(range(data.nrows-4)):
-        if("Tối" in str(data.cell_value(m + 3, khaibao.Ca)) and data.cell_value(m + 4, khaibao.Giora) != "None" and data.cell_value(m + 3, khaibao.Giora) != "None" and data.cell_value(m + 4, khaibao.Giovao) == "None" and ("Sáng" in str(data.cell_value(m + 4, khaibao.Ca)))):
-            if("Cuối tuần" in str(data.cell_value(m + 4, khaibao.Ca))):
-                w_sheet.write(m+4, khaibao.Giovao, data.cell_value(m + 3, khaibao.Giora))
-                temp = data.cell_value(m + 4, khaibao.WeekendOT)
-                w_sheet.write(m+4, khaibao.WeekendOT, float(temp) + 4)
-            else: 
-                if(float(data.cell_value(m + 3, khaibao.Regular)) >= 5):
-                    w_sheet.write(m+4, khaibao.Giovao, data.cell_value(m + 3, khaibao.Giora))
-                    temp = data.cell_value(m + 4, khaibao.NormalOT)
-                    w_sheet.write(m+4, khaibao.NormalOT, float(temp) + 4)
+        if(data.cell_value(m + 4, khaibao.Giovao) == "None"):
+            if(data.cell_value(m + 4, khaibao.Giora) != "None"):
+                if("Tối" in str(data.cell_value(m + 3, khaibao.Ca))  and data.cell_value(m + 3, khaibao.Giora) != "None" and ("Sáng" in str(data.cell_value(m + 4, khaibao.Ca)))):
+                    if("Cuối tuần" in str(data.cell_value(m + 4, khaibao.Ca))):
+                        w_sheet.write(m+4, khaibao.Giovao, data.cell_value(m + 3, khaibao.Giora))
+                        temp = data.cell_value(m + 4, khaibao.WeekendOT)
+                        w_sheet.write(m+4, khaibao.WeekendOT, float(temp) + 4)
+                    else: 
+                        if(float(data.cell_value(m + 4, khaibao.Regular)) >= 5):
+                            w_sheet.write(m+4, khaibao.Giovao, data.cell_value(m + 3, khaibao.Giora))
+                            temp = data.cell_value(m + 4, khaibao.NormalOT)
+                            w_sheet.write(m+4, khaibao.NormalOT, float(temp) + (12-float(data.cell_value(m + 4, khaibao.Regular))))
         # =========================== convert OT =====================        
 
     wb.save('../cham-cong/convert/baocao.xlsx')
