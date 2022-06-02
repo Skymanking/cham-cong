@@ -15,7 +15,6 @@ class Giaodien(Frame):
         self.data_nhanvien_link['text'] = " " 
         self.data_OT_link['text'] = " " 
         self.data_chamcong_link['text'] = " " 
-
     def Open_data(self):
         self.update()
         GD.filename_data = filedialog.askopenfilename()
@@ -39,8 +38,11 @@ class Giaodien(Frame):
             self.countdown['text'] = "Thoi gian: " + str(dem)
             GD.after(1000, timerun)
         timerun()
-        xuly(GD.filename_data, GD.filename_OT, GD.filename_nhanvien, GD.text_nam.get(), GD.text_thang.get(), self.holiday_link.get())
-        self.thongbao['text'] = "XONG "
+        try:
+            xuly(GD.filename_data, GD.filename_OT, GD.filename_nhanvien, GD.text_nam.get(), GD.text_thang.get(), self.holiday_link.get())
+            self.thongbao['text'] = "XONG "
+        except:
+            self.thongbao['text'] = "LỖI. LIÊN HỆ IT "
     
     def __init__(self, master):
         super().__init__(master)
@@ -96,6 +98,8 @@ class Giaodien(Frame):
         self.valueyear.place(height = 30 , width = 80, x = 220, y = 160)
         self.year_title.place(height = 30, width = 50, x =170 , y = 160)
 
+        self.thongbao.place(height = 60, width = 700, x =400 , y = 140)
+
         self.data_chamcong.place(height = 40, width = 400, x =10 , y = 230)
         self.button_chamcong.place(height = 25, width = 70, x = 10, y = 265)
         self.data_chamcong_link.place(height = 40, width = 700, x =170 , y = 230)
@@ -111,7 +115,7 @@ class Giaodien(Frame):
         self.holiday.place(height = 40, width = 400, x =10 , y = 435)
         self.holiday_link.place(height = 30, width = 500, x =10 , y = 465)
  
-        self.thongbao.place(height = 60, width = 700, x =250 , y = 450)
+        
 
         self.countdown.place(height = 60, width = 700, x =250 , y = 500)
 
