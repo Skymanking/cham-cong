@@ -226,7 +226,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
             else:
                 w_sheet.write(m+3, khaibao.MaHoaCa, "")
         # =========================== Duyệt OT =====================
-        if(float(data.cell_value(m+3, khaibao.OT1))<=1):
+        if(float(data.cell_value(m+3, khaibao.OT1))<1):
             if(float(data.cell_value(m+3, khaibao.Xinlamthem))==999):
                 w_sheet.write(m+3, khaibao.TongOT, "RR24")
             elif(float(data.cell_value(m+3, khaibao.WeekendOT))+ float(data.cell_value(m+3, khaibao.HolidayOT))> float(data.cell_value(m+3, khaibao.Xinlamthem))):
