@@ -134,8 +134,7 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
     w_sheet_InOut = mod_day_inout.get_sheet(0)
 
     # =========================== Mã hoá ca =====================
-    print("Xu ly ngay chu nhat khong co gio vao")
-    print("Chuan bi du lieu OT")
+    print("Xu ly ngay chu nhat khong co gio vao")    
     for m in tqdm(range(data.nrows-4)):
         if(data.cell_value(m + 4, khaibao.Giovao) == "None" and data.cell_value(m + 4, khaibao.Giora) != "None"):
             if("Tối" in str(data.cell_value(m + 3, khaibao.Ca))  and data.cell_value(m + 3, khaibao.Giora) != "None" and ("Sáng" in str(data.cell_value(m + 4, khaibao.Ca)))):
@@ -144,16 +143,17 @@ def xuly(namedata, nameOT,namenhanvien, text_nam, text_thang, holiday):
                     temp = data.cell_value(m + 4, khaibao.WeekendOT)
                     w_sheet.write(m+4, khaibao.WeekendOT, float(temp) + 4)
                 else: 
-                    if(float(data.cell_value(m + 4, khaibao.Regular)) >= 5):
+                    if(float(data.cell_value(m + 4, khaibao.Regular)) >= 3):
                         w_sheet.write(m+4, khaibao.Giovao, data.cell_value(m + 3, khaibao.Giora))
                         temp = data.cell_value(m + 4, khaibao.NormalOT)
                         w_sheet.write(m+4, khaibao.NormalOT, float(temp) + (12-float(data.cell_value(m + 4, khaibao.Regular))))
         # =========================== convert OT =====================        
-
+    
     wb.save('../cham-cong/convert/baocao.xlsx')
     dataOT = xlrd.open_workbook(nameOT)
     ot = dataOT.sheet_by_index(0)
-    for m in (range(data.nrows-3)):
+    print("Chuan bi du lieu OT")
+    for m in tqdm(range(data.nrows-3)):
         ot3 = 0
         for i in range(ot.nrows-3):
             x =(datetime.strptime(ot.cell_value(i+3, khaibao.OTStart),"%Y-%m-%d %H:%M:%S"))
